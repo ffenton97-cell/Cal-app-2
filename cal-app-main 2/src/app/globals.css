@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── FORGE palette ───────────────────────────────────────────────────────── */
+@theme {
+  --color-realm-bg: #0c0809;
+  --color-realm-bg-mid: #0f0a0b;
+  --color-realm-panel: #1a0c10;
+  --color-realm-elevated: #1c1418;
+  --color-realm-deep: #0a0607;
+  --color-realm-inset: #141010;
+  --color-realm-track: #2a2224;
+  --color-realm-border: #1c1416;
+  --color-realm-border-strong: #2e2628;
+  --color-realm-hairline: #1c1416;
+  --color-realm-gold: #e05070;
+  --color-realm-gold-hot: #c43050;
+  --color-realm-text: #f5f0f0;
+  --color-realm-text-soft: rgba(255, 255, 255, 0.85);
+  --color-realm-muted: rgba(255, 255, 255, 0.32);
+  --color-realm-faint: rgba(255, 255, 255, 0.18);
+  --color-realm-soft: rgba(255, 255, 255, 0.25);
+  --color-realm-sage: #89d185;
+  --color-realm-ember: #d4a050;
+  --color-realm-arcane: rgba(255, 255, 255, 0.45);
+  --color-forge-surface: rgba(255, 255, 255, 0.03);
+  --color-forge-warn-bg: rgba(212, 160, 80, 0.08);
+  --color-forge-warn-border: rgba(212, 160, 80, 0.25);
+}
+
+/* ─── Typography ──────────────────────────────────────────────────────────── */
+.ff-heading {
+  font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-realm-text);
+}
+
+.forge-mono {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-weight: 400;
+  font-feature-settings: 'tnum' 1;
+}
+
+.ff-mono {
+  font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  font-feature-settings: 'tnum' 1;
+}
+
+.forge-pulse-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: #e05070;
+  box-shadow: 0 0 5px rgba(224, 80, 112, 0.5);
+  animation: forge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes forge-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+}
+
+/* ─── Base reset ──────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  height: 100%;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+}
+
+body {
+  background: var(--color-realm-bg);
+  color: rgba(255, 255, 255, 0.55);
+  font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+/* Panel / callout */
+.realm-banner {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.realm-glow-gold {
+  box-shadow: 0 0 0 1px rgba(224, 80, 112, 0.15);
+}
+
+/* Briefing / structured panels */
+.ea-panel {
+  font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.ea-panel .ea-h {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #f5f0f0;
+}
+
+.ea-panel .ea-sub {
+  color: rgba(255, 255, 255, 0.32);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.ea-panel .ea-k {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.12);
+}
+
+.ea-panel .ea-time {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.18);
+  min-width: 2.75rem;
+}
+
+.ea-panel .ea-fl-input:focus {
+  border-color: rgba(224, 80, 112, 0.35);
+  box-shadow: 0 0 0 1px rgba(224, 80, 112, 0.12);
+}
+
+.fl-scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.fl-scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.fl-nav-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+.fl-main-pad {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.fl-header-safe {
+  padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+}
+
+button,
+.fl-input,
+textarea.fl-input,
+[role="button"],
+nav a {
+  touch-action: manipulation;
+}
+
+/* ─── Inputs ─────────────────────────────────────────────────────────────── */
+.fl-input {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  color: #f5f0f0;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 0.875rem;
+  width: 100%;
+  display: block;
+
+  @media (max-width: 640px) {
+    font-size: 1rem;
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.16);
+    font-style: italic;
+  }
+  &:focus {
+    border-color: rgba(224, 80, 112, 0.35);
+    box-shadow: 0 0 0 1px rgba(224, 80, 112, 0.12);
+  }
+  &[type=number]  { -moz-appearance: textfield; }
+  &[type=number]::-webkit-inner-spin-button,
+  &[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+}
+
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: rgba(255, 255, 255, 0.08); border-radius: 2px; }
