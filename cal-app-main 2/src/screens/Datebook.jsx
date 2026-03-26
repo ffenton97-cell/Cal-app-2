@@ -16,24 +16,8 @@ import { db } from '../db'
 import { USER } from '../theme'
 import { importantDateToTimelineItem, uid } from '../lib/importantDates.js'
 import { timeInputToStartMin } from '../lib/dayStructure.js'
+import { nextPaydays } from '../lib/paydays.js'
 import SectionLabel from '../components/SectionLabel'
-
-function nextPaydays(anchorStr, intervalDays, count = 6) {
-  const anchor = parseISO(`${anchorStr}T12:00:00`)
-  const today = new Date()
-  today.setHours(12, 0, 0, 0)
-  let d = new Date(anchor)
-  const out = []
-  let guard = 0
-  while (guard++ < 500 && out.length < count) {
-    if (d >= today) {
-      out.push(format(d, 'yyyy-MM-dd'))
-    }
-    d = new Date(d)
-    d.setDate(d.getDate() + intervalDays)
-  }
-  return out
-}
 
 /**
  * Upcoming & important dates — no full calendar.
@@ -371,10 +355,10 @@ export default function Datebook() {
         </form>
       </section>
 
-      <section id="schedule" className="mb-8 scroll-mt-4 ea-panel overflow-hidden">
+      <section id="schedule" className="mb-8 scroll-mt-4 rounded-[12px] bg-[rgba(255,255,255,0.025)] border border-[rgba(255,255,255,0.07)] overflow-hidden">
         <div className="px-3.5 pt-3.5 pb-2">
-          <h2 className="ea-h text-[14px]">Schedule</h2>
-          <p className="ea-sub mt-1.5">
+          <h2 className="text-[14px] font-semibold tracking-tight text-[#f5f0f0]">Schedule</h2>
+          <p className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] mt-1.5">
             Timed items surface first on Home brief. On-device only — no Google or device calendar
             feed.
           </p>
@@ -385,49 +369,48 @@ export default function Datebook() {
         >
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="ea-k block mb-1">Date</label>
+              <label className="ios-label block mb-1">Date</label>
               <input
                 type="date"
                 value={evDate}
                 onChange={(e) => setEvDate(e.target.value)}
-                className="fl-input ea-fl-input text-[13px]"
+                className="fl-input text-[13px]"
               />
             </div>
             <div>
-              <label className="ea-k block mb-1">Start</label>
+              <label className="ios-label block mb-1">Start</label>
               <input
                 type="time"
                 value={evTime}
                 onChange={(e) => setEvTime(e.target.value)}
-                className="fl-input ea-fl-input text-[13px]"
+                className="fl-input text-[13px]"
               />
             </div>
           </div>
           <div>
-            <label className="ea-k block mb-1">Subject</label>
+            <label className="ios-label block mb-1">Subject</label>
             <input
               type="text"
               value={evTitle}
               onChange={(e) => setEvTitle(e.target.value)}
               placeholder="e.g. Pipeline review, Gym, Focus block"
-              className="fl-input ea-fl-input text-[13px]"
+              className="fl-input text-[13px]"
             />
           </div>
           <div>
-            <label className="ea-k block mb-1">Details (optional)</label>
+            <label className="ios-label block mb-1">Details (optional)</label>
             <input
               type="text"
               value={evNotes}
               onChange={(e) => setEvNotes(e.target.value)}
               placeholder="Dial-in, room, prep"
-              className="fl-input ea-fl-input text-[13px]"
+              className="fl-input text-[13px]"
             />
           </div>
           <button
             type="submit"
             disabled={evSaving || !evTitle.trim() || !evDate}
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md text-[12px] font-medium text-realm-text-soft bg-white/[0.08] border border-white/[0.08] hover:bg-white/[0.11] disabled:opacity-35 transition-colors"
-            style={{ fontFamily: 'system-ui, sans-serif' }}
           >
             <Plus size={15} strokeWidth={2} />
             {evSaving ? 'Saving…' : 'Add to schedule'}
@@ -435,9 +418,9 @@ export default function Datebook() {
         </form>
         <div className="border-t border-white/[0.06]">
           {timedPlans === undefined ? (
-            <p className="ea-sub px-3.5 py-3">Loading…</p>
+            <p className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] px-3.5 py-3">Loading…</p>
           ) : timedPlans.length === 0 ? (
-            <p className="ea-sub px-3.5 py-3">No entries in the next 60 days.</p>
+            <p className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] px-3.5 py-3">No entries in the next 60 days.</p>
           ) : (
             <ul className="list-none m-0 p-0">
               {timedPlans.map((ev) => {
@@ -447,15 +430,15 @@ export default function Datebook() {
                     key={ev.id}
                     className="flex items-start gap-3 px-3.5 py-2.5 border-t border-white/[0.06] first:border-t-0"
                   >
-                    <div className="ea-time shrink-0 w-14 pt-0.5 text-right leading-tight">
+                    <div className="ff-mono text-[11px] text-[rgba(255,255,255,0.32)] tabular-nums shrink-0 w-14 pt-0.5 text-right leading-tight">
                       <span className="block text-realm-text-soft text-[12px] font-medium">
                         {format(d, 'EEE d MMM')}
                       </span>
                       <span className="block tabular-nums mt-0.5">{formatStartMin(ev.startMin)}</span>
                     </div>
                     <div className="min-w-0 flex-1 pt-0.5">
-                      <p className="ea-h text-[13px] leading-snug">{ev.title}</p>
-                      {ev.notes ? <p className="ea-sub mt-0.5">{ev.notes}</p> : null}
+                      <p className="text-[13px] font-semibold tracking-tight text-[#f5f0f0] leading-snug">{ev.title}</p>
+                      {ev.notes ? <p className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] mt-0.5">{ev.notes}</p> : null}
                     </div>
                     <button
                       type="button"

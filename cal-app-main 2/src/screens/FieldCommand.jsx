@@ -56,65 +56,25 @@ export default function FieldCommand() {
   const [jAi, setJAi] = useState({ text: '', loading: false, err: '' })
   const [cAi, setCAi] = useState({ text: '', loading: false, err: '' })
 
-  async function runWeekly() {
+  async function runPass(setFn, msgBuilder, maxTokens) {
     if (!bundle) return
-    setWAi({ text: '', loading: true, err: '' })
+    setFn({ text: '', loading: true, err: '' })
     try {
       const text = await callClaudeProxy({
         system: FIELD_ANALYST_SYSTEM,
-        messages: [{ role: 'user', content: weeklyFieldReportUserMessage(bundle) }],
-        max_tokens: 900,
+        messages: [{ role: 'user', content: msgBuilder(bundle) }],
+        max_tokens: maxTokens,
       })
-      setWAi({ text, loading: false, err: '' })
+      setFn({ text, loading: false, err: '' })
     } catch (e) {
-      setWAi({ text: '', loading: false, err: e?.message || 'Failed' })
+      setFn({ text: '', loading: false, err: e?.message || 'Failed' })
     }
   }
 
-  async function runMonthly() {
-    if (!bundle) return
-    setMAi({ text: '', loading: true, err: '' })
-    try {
-      const text = await callClaudeProxy({
-        system: FIELD_ANALYST_SYSTEM,
-        messages: [{ role: 'user', content: monthlyCommanderUserMessage(bundle) }],
-        max_tokens: 1200,
-      })
-      setMAi({ text, loading: false, err: '' })
-    } catch (e) {
-      setMAi({ text: '', loading: false, err: e?.message || 'Failed' })
-    }
-  }
-
-  async function runJournal() {
-    if (!bundle) return
-    setJAi({ text: '', loading: true, err: '' })
-    try {
-      const text = await callClaudeProxy({
-        system: FIELD_ANALYST_SYSTEM,
-        messages: [{ role: 'user', content: journalMiningUserMessage(bundle) }],
-        max_tokens: 700,
-      })
-      setJAi({ text, loading: false, err: '' })
-    } catch (e) {
-      setJAi({ text: '', loading: false, err: e?.message || 'Failed' })
-    }
-  }
-
-  async function runCorr() {
-    if (!bundle) return
-    setCAi({ text: '', loading: true, err: '' })
-    try {
-      const text = await callClaudeProxy({
-        system: FIELD_ANALYST_SYSTEM,
-        messages: [{ role: 'user', content: correlationNarrativeUserMessage(bundle) }],
-        max_tokens: 600,
-      })
-      setCAi({ text, loading: false, err: '' })
-    } catch (e) {
-      setCAi({ text: '', loading: false, err: e?.message || 'Failed' })
-    }
-  }
+  const runWeekly  = () => runPass(setWAi, weeklyFieldReportUserMessage, 900)
+  const runMonthly = () => runPass(setMAi, monthlyCommanderUserMessage, 1200)
+  const runJournal = () => runPass(setJAi, journalMiningUserMessage, 700)
+  const runCorr    = () => runPass(setCAi, correlationNarrativeUserMessage, 600)
 
   const cur = bundle?.weekCompare?.current
   const pri = bundle?.weekCompare?.prior

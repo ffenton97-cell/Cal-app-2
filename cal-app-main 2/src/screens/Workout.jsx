@@ -15,6 +15,7 @@ import {
   deleteWorkoutBatch,
 } from '../lib/workoutLibrary.js'
 import { calcStreak } from '../hooks/useStreaks.js'
+import { fetchXPContext } from '../lib/xpContext.js'
 import SectionLabel from '../components/SectionLabel'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -172,25 +173,8 @@ export default function Workout({ onXP }) {
 
     if (!alreadyXPd.current) {
       alreadyXPd.current = true
-      const [totalWorkouts, totalCheckIns, totalGoals, completedGoals,
-             outboundDays, totalCalls, totalWeightLogs, totalScans, totalFinanceLogs] =
-        await Promise.all([
-          db.workouts.count(),
-          db.entries.count(),
-          db.goals.count(),
-          db.goals.filter(g => g.completed).count(),
-          db.outbound.count(),
-          db.outbound.toArray().then(r => r.reduce((s, x) => s + (x.calls || 0), 0)),
-          db.entries.filter(e => !!e.weight).count(),
-          db.scans.count(),
-          db.finance.count(),
-        ])
-      const { unlockedAchievements } = await awardXP(xpGain, {
-        totalWorkouts, totalCheckIns, checkInStreak: 0,
-        totalGoals, completedGoals,
-        outboundDays, totalCalls, totalWeightLogs,
-        totalScans, totalFinanceLogs,
-      })
+      const ctx = await fetchXPContext()
+      const { unlockedAchievements } = await awardXP(xpGain, ctx)
       onXP?.({ amount: xpGain, achievement: unlockedAchievements[0] ?? null })
     }
 

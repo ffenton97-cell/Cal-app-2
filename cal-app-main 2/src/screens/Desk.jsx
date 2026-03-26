@@ -28,6 +28,7 @@ import {
 import { rankOpenTodosForWeek } from '../lib/todoWeekPrioritize.js'
 import { buildDayStructure } from '../lib/dayStructure.js'
 import { calcStreak } from '../hooks/useStreaks.js'
+import { nextPaydays } from '../lib/paydays.js'
 import SectionLabel from '../components/SectionLabel'
 
 function DailyBriefing({ todayStr, suggestions }) {
@@ -36,14 +37,14 @@ function DailyBriefing({ todayStr, suggestions }) {
   const dateLine = format(parseISO(`${todayStr}T12:00:00`), 'EEEE, MMMM d')
 
   return (
-    <section className="ea-panel overflow-hidden">
+    <section className="rounded-[12px] bg-[rgba(255,255,255,0.025)] border border-[rgba(255,255,255,0.07)] overflow-hidden">
       <div className="px-3.5 pt-3.5 pb-1">
         <div className="flex items-start gap-2.5">
           <Briefcase size={15} className="shrink-0 mt-0.5 text-realm-muted" strokeWidth={2} />
           <div className="min-w-0 flex-1">
-            <p className="ea-k mb-0.5">Brief</p>
-            <p className="ea-h text-[15px]">{dateLine}</p>
-            <p className="ea-sub mt-2">
+            <p className="ios-label mb-0.5">Brief</p>
+            <p className="text-[15px] font-semibold tracking-tight text-[#f5f0f0]">{dateLine}</p>
+            <p className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] mt-2">
               Clock first. Then moves from tasks, deadlines, and personal dates. No external calendar
               sync — timed blocks live under Calendar → Schedule.
             </p>
@@ -52,7 +53,7 @@ function DailyBriefing({ todayStr, suggestions }) {
       </div>
 
       <div className="border-t border-white/[0.06]">
-        <div className="px-3.5 py-2 ea-k">Clock</div>
+        <div className="px-3.5 py-2 ios-label">Clock</div>
         {scheduled.length > 0 ? (
           <ul className="list-none m-0 p-0">
             {scheduled.map((s, i) => {
@@ -62,19 +63,19 @@ function DailyBriefing({ todayStr, suggestions }) {
                   key={`${s.kind}-${s.order}-${i}`}
                   className="border-t border-white/[0.06] px-3.5 py-2 flex gap-3"
                 >
-                  <span className="ea-time shrink-0 w-11 text-right pt-0.5">
+                  <span className="ff-mono text-[11px] text-[rgba(255,255,255,0.32)] tabular-nums shrink-0 w-11 text-right pt-0.5">
                     {hasTime ? s.timeLabel : '—'}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="ea-h text-[13px] leading-snug">{s.headline}</p>
-                    {s.detail ? <p className="ea-sub mt-1">{s.detail}</p> : null}
+                    <p className="text-[13px] font-semibold tracking-tight text-[#f5f0f0] leading-snug">{s.headline}</p>
+                    {s.detail ? <p className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] mt-1">{s.detail}</p> : null}
                   </div>
                 </li>
               )
             })}
           </ul>
         ) : (
-          <p className="ea-sub px-3.5 pb-3 pt-0 border-t border-white/[0.06]">
+          <p className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] px-3.5 pb-3 pt-0 border-t border-white/[0.06]">
             Nothing on the clock. Add blocks under Calendar → Schedule.
           </p>
         )}
@@ -82,17 +83,17 @@ function DailyBriefing({ todayStr, suggestions }) {
 
       {actions.length > 0 && (
         <div className="border-t border-white/[0.06]">
-          <div className="px-3.5 py-2 ea-k">Moves</div>
+          <div className="px-3.5 py-2 ios-label">Moves</div>
           <ul className="list-none m-0 p-0">
             {actions.map((s, i) => (
               <li
                 key={`${s.kind}-${s.order}-a-${i}`}
                 className="border-t border-white/[0.06] px-3.5 py-2 flex gap-3"
               >
-                <span className="ea-time shrink-0 w-11 block" aria-hidden="true" />
+                <span className="shrink-0 w-11 block" aria-hidden="true" />
                 <div className="min-w-0 flex-1">
-                  <p className="ea-h text-[13px] leading-snug">{s.headline}</p>
-                  {s.detail ? <p className="ea-sub mt-1">{s.detail}</p> : null}
+                  <p className="text-[13px] font-semibold tracking-tight text-[#f5f0f0] leading-snug">{s.headline}</p>
+                  {s.detail ? <p className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] mt-1">{s.detail}</p> : null}
                 </div>
               </li>
             ))}
@@ -103,7 +104,7 @@ function DailyBriefing({ todayStr, suggestions }) {
       <div className="border-t border-white/[0.06] px-3.5 py-2.5">
         <Link
           href="/datebook#schedule"
-          className="ea-sub inline-flex items-center gap-1.5 hover:text-realm-text-soft transition-colors"
+          className="text-[13px] text-[rgba(255,255,255,0.5)] leading-[1.55] inline-flex items-center gap-1.5 hover:text-realm-text-soft transition-colors"
         >
           Calendar → Schedule
           <ArrowRight size={12} strokeWidth={2} className="opacity-45" />
@@ -111,23 +112,6 @@ function DailyBriefing({ todayStr, suggestions }) {
       </div>
     </section>
   )
-}
-
-function nextPaydays(anchorStr, intervalDays, count = 4) {
-  const anchor = parseISO(`${anchorStr}T12:00:00`)
-  const today = new Date()
-  today.setHours(12, 0, 0, 0)
-  let d = new Date(anchor)
-  const out = []
-  let guard = 0
-  while (guard++ < 500 && out.length < count) {
-    if (d >= today) {
-      out.push(format(d, 'yyyy-MM-dd'))
-    }
-    d = new Date(d)
-    d.setDate(d.getDate() + intervalDays)
-  }
-  return out
 }
 
 const priColor = (p) =>
@@ -275,11 +259,9 @@ export default function Desk({ onXP }) {
     }
   }
 
-  const sessionElapsedSec =
-    sessionActive && salesBlock?.ux?.sessionStartedAt
-      ? Math.floor((Date.now() - salesBlock.ux.sessionStartedAt) / 1000)
-      : 0
-  void sessionTick
+  const sessionElapsedSec = sessionTick >= 0 && sessionActive && salesBlock?.ux?.sessionStartedAt
+    ? Math.floor((Date.now() - salesBlock.ux.sessionStartedAt) / 1000)
+    : 0
   const sessionTimerLabel = `${String(Math.floor(sessionElapsedSec / 60)).padStart(2, '0')}:${String(sessionElapsedSec % 60).padStart(2, '0')}`
 
   return (
