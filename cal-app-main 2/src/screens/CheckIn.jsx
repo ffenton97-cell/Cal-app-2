@@ -9,6 +9,7 @@ import { awardXP } from '../hooks/useXP'
 import { useStreaks } from '../hooks/useStreaks'
 import { XP as XP_VALUES, USER, GYM_SCHEDULE } from '../theme'
 import { db } from '../db'
+import { fetchXPContext } from '../lib/xpContext.js'
 import { buildMorningBriefSystemPrompt } from '../lib/claudeContext.js'
 import { callClaudeProxy } from '../lib/claudeClient.js'
 import SectionLabel from '../components/SectionLabel'
@@ -163,27 +164,9 @@ export default function CheckIn({ onXP }) {
 
     if (!alreadyXPd.current) {
       alreadyXPd.current = true
-
-      const [totalCheckIns, totalWorkouts, totalGoals, completedGoals,
-             outboundDays,  totalCalls,    totalWeightLogs,
-             totalScans,    totalFinanceLogs] = await Promise.all([
-        db.entries.count(),
-        db.workouts.count(),
-        db.goals.count(),
-        db.goals.filter(g => g.completed).count(),
-        db.outbound.count(),
-        db.outbound.toArray().then(r => r.reduce((s, x) => s + (x.calls || 0), 0)),
-        db.entries.filter(e => !!e.weight).count(),
-        db.scans.count(),
-        db.finance.count(),
-      ])
-
-      const { unlockedAchievements } = await awardXP(xpGain, {
-        totalCheckIns, checkInStreak: checkInStreak + 1,
-        totalWorkouts, totalGoals, completedGoals,
-        outboundDays, totalCalls, totalWeightLogs,
-        totalScans, totalFinanceLogs,
-      })
+      const ctx = await fetchXPContext()
+      ctx.checkInStreak = checkInStreak + 1
+      const { unlockedAchievements } = await awardXP(xpGain, ctx)
       onXP?.({ amount: xpGain, achievement: unlockedAchievements[0] ?? null })
     }
 

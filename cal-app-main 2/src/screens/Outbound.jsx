@@ -9,6 +9,7 @@ import { calcStreak } from '../hooks/useStreaks.js'
 import { XP as XP_VALUES } from '../theme'
 import { db } from '../db'
 import { getOrInitSalesUX, updateSalesUX } from '../lib/salesUX.js'
+import { fetchXPContext } from '../lib/xpContext.js'
 import { scenarioForToday, tierForDrillStreak } from '../data/objectionDrills.js'
 import { OBJECTION_DRILL_SYSTEM, buildObjectionDrillUserMessage } from '../lib/claudeContext.js'
 import { callClaudeProxy } from '../lib/claudeClient.js'
@@ -75,7 +76,6 @@ function MetricInput({ label, value, onChange, sub }) {
 export default function Outbound({ onXP }) {
   const hash = useHash()
   const todayStr = format(new Date(), 'yyyy-MM-dd')
-  const yesterdayStr = format(subDays(new Date(), 1), 'yyyy-MM-dd')
   const existing = useOutbound()
 
   const salesUx = useLiveQuery(() => getOrInitSalesUX(), [])
@@ -190,28 +190,8 @@ export default function Outbound({ onXP }) {
 
     if (!alreadyXPd.current) {
       alreadyXPd.current = true
-
-      const [outboundDays, allRecords, totalCheckIns, totalWorkouts,
-             totalGoals, completedGoals, totalWeightLogs, totalScans, totalFinanceLogs] =
-        await Promise.all([
-          db.outbound.count(),
-          db.outbound.toArray(),
-          db.entries.count(),
-          db.workouts.count(),
-          db.goals.count(),
-          db.goals.filter(g => g.completed).count(),
-          db.entries.filter(e => !!e.weight).count(),
-          db.scans.count(),
-          db.finance.count(),
-        ])
-      const totalCalls = allRecords.reduce((s, r) => s + (r.calls || 0), 0)
-
-      const { unlockedAchievements } = await awardXP(xpGain, {
-        outboundDays, totalCalls,
-        totalCheckIns, checkInStreak: 0,
-        totalWorkouts, totalGoals, completedGoals,
-        totalWeightLogs, totalScans, totalFinanceLogs,
-      })
+      const ctx = await fetchXPContext()
+      const { unlockedAchievements } = await awardXP(xpGain, ctx)
       onXP?.({ amount: xpGain, achievement: unlockedAchievements[0] ?? null })
     }
 
@@ -252,37 +232,15 @@ export default function Outbound({ onXP }) {
       let newStreak = ux.drillStreak ?? 0
       const last = ux.lastDrillDate
       if (last !== todayStr) {
+        const yesterdayStr = format(subDays(new Date(), 1), 'yyyy-MM-dd')
         if (last === yesterdayStr) newStreak = (ux.drillStreak ?? 0) + 1
         else newStreak = 1
       }
 
       let xpGranted = 0
       if (ux.lastDrillXpDay !== todayStr) {
-        const [outboundDays, allRecords, totalCheckIns, totalWorkouts, totalGoals, completedGoals, totalWeightLogs, totalScans, totalFinanceLogs] =
-          await Promise.all([
-            db.outbound.count(),
-            db.outbound.toArray(),
-            db.entries.count(),
-            db.workouts.count(),
-            db.goals.count(),
-            db.goals.filter((g) => g.completed).count(),
-            db.entries.filter((e) => !!e.weight).count(),
-            db.scans.count(),
-            db.finance.count(),
-          ])
-        const totalCalls = allRecords.reduce((s, r) => s + (r.calls || 0), 0)
-        await awardXP(XP_VALUES.objectionDrill, {
-          outboundDays,
-          totalCalls,
-          totalCheckIns,
-          checkInStreak: 0,
-          totalWorkouts,
-          totalGoals,
-          completedGoals,
-          totalWeightLogs,
-          totalScans,
-          totalFinanceLogs,
-        })
+        const ctx = await fetchXPContext()
+        await awardXP(XP_VALUES.objectionDrill, ctx)
         xpGranted = XP_VALUES.objectionDrill
         onXP?.({ amount: xpGranted, achievement: null })
       }

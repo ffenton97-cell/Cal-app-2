@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { format, differenceInDays, parseISO } from 'date-fns'
 import { Plus, Trash2, CheckCheck, ChevronDown, ChevronUp, Zap } from 'lucide-react'
 import { useGoals, saveGoal, logGoalProgress, deleteGoal } from '../hooks/useGoals'
@@ -109,13 +109,7 @@ function GoalCard({ goal, onXP }) {
   }
 
   return (
-    <div
-      className="border rounded-xl overflow-hidden transition-all duration-200"
-      style={{
-        borderColor: goal.completed ? '#4ade8030' : '#252525',
-        backgroundColor: goal.completed ? '#4ade8006' : '#161616',
-      }}
-    >
+    <div className={`rounded-xl overflow-hidden transition-all duration-200 border ${goal.completed ? 'border-[#4ade8030] bg-[#4ade8006]' : 'border-[#252525] bg-[#161616]'}`}>
       {/* card header — tap to expand */}
       <button
         type="button"
@@ -420,7 +414,6 @@ function NewGoalForm({ onSave, onCancel }) {
 export default function Goals({ onXP }) {
   const goals    = useGoals()
   const [showForm, setShowForm] = useState(false)
-  const awarded  = useRef(false)
 
   const active    = goals.filter(g => !g.completed).sort((a, b) => {
     if (!a.deadline) return 1
@@ -431,19 +424,14 @@ export default function Goals({ onXP }) {
 
   async function handleAddGoal() {
     setShowForm(false)
-    if (!awarded.current) {
-      awarded.current = true
-      const totalGoals = await db.goals.count()
-      const { unlockedAchievements } = await awardXP(XP_VALUES.addGoal, {
-        totalGoals, completedGoals: 0,
-        totalCheckIns: 0, checkInStreak: 0, totalWorkouts: 0,
-        outboundDays: 0, totalCalls: 0, totalWeightLogs: 0,
-        totalScans: 0, totalFinanceLogs: 0,
-      })
-      onXP?.({ amount: XP_VALUES.addGoal, achievement: unlockedAchievements[0] ?? null })
-    } else {
-      onXP?.({ amount: XP_VALUES.addGoal })
-    }
+    const totalGoals = await db.goals.count()
+    const { unlockedAchievements } = await awardXP(XP_VALUES.addGoal, {
+      totalGoals, completedGoals: 0,
+      totalCheckIns: 0, checkInStreak: 0, totalWorkouts: 0,
+      outboundDays: 0, totalCalls: 0, totalWeightLogs: 0,
+      totalScans: 0, totalFinanceLogs: 0,
+    })
+    onXP?.({ amount: XP_VALUES.addGoal, achievement: unlockedAchievements[0] ?? null })
   }
 
   return (

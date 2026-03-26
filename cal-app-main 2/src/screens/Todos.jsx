@@ -25,7 +25,6 @@ const today    = () => format(new Date(), 'yyyy-MM-dd')
 function filterTodos(todos, tab) {
   const t = today()
   switch (tab) {
-    case 'FOCUS':    return todos.filter((x) => !x.done)
     case 'TODAY':    return todos.filter(x => !x.done && x.due && x.due <= t)
     case 'UPCOMING': return todos.filter(x => !x.done && (!x.due || x.due > t))
     case 'ALL':      return todos.filter(x => !x.done)

@@ -8,6 +8,8 @@ import { XP as XP_VALUES } from '../theme'
 import { db } from '../db'
 import { buildAccountabilitySystemPrompt } from '../lib/claudeContext.js'
 import { callClaudeProxy } from '../lib/claudeClient.js'
+import SectionLabel from '../components/SectionLabel'
+
 export default function Journal({ onXP }) {
   const todayStr  = format(new Date(), 'yyyy-MM-dd')
   const todayNote = useDayNote()
@@ -160,10 +162,8 @@ export default function Journal({ onXP }) {
       <>
       <div className="mb-7">
         <div className="mb-3 flex items-center gap-3">
-          <span className="forge-mono text-[9px] font-normal uppercase tracking-[0.1em] text-[rgba(255,255,255,0.12)]">
-            Today
-          </span>
-          <div className="h-px flex-1 bg-[rgba(220,60,80,0.06)]" />
+          <span className="ios-label">Today</span>
+          <div className="h-px flex-1 bg-[rgba(220,60,80,0.08)]" />
           {saved && (
             <span className="forge-mono shrink-0 text-[9px] tracking-[0.06em] text-realm-sage">saved</span>
           )}
@@ -212,12 +212,7 @@ export default function Journal({ onXP }) {
       {/* past entries */}
       {pastNotes?.some(Boolean) && (
         <div>
-          <div className="mb-4 flex items-center gap-3">
-            <span className="forge-mono text-[9px] font-normal uppercase tracking-[0.1em] text-[rgba(255,255,255,0.12)]">
-              Back
-            </span>
-            <div className="h-px flex-1 bg-[rgba(220,60,80,0.06)]" />
-          </div>
+          <SectionLabel className="mb-4">Back</SectionLabel>
           <div className="space-y-4">
             {pastDates.map((d, i) => {
               const note  = pastNotes?.[i]

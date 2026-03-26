@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { format } from 'date-fns'
 import { Trash2, Zap, Plus } from 'lucide-react'
 import { useFood, addMeal, removeMeal, saveFoodNotes } from '../hooks/useFood'
@@ -65,10 +65,12 @@ export default function Food({ onXP }) {
   const [saving,  setSaving]  = useState(false)
 
   const alreadyXPd = useRef(false)
-  // mark XP awarded if food record already exists
-  if (food !== undefined && food !== null && !alreadyXPd.current && meals.length > 0) {
-    alreadyXPd.current = true
-  }
+  // mark XP awarded if food record already exists (must be in effect, not render body)
+  useEffect(() => {
+    if (food != null && meals.length > 0) {
+      alreadyXPd.current = true
+    }
+  }, [food, meals.length])
 
   const calPct  = Math.min(totalCal  / USER.cutCals,    1)
   const protPct = Math.min(totalProt / USER.cutProtein, 1)
