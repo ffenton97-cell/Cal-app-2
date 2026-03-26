@@ -145,7 +145,7 @@ export default function BodyComp({ onXP }) {
           <SectionLabel>New Scan</SectionLabel>
           <div className="ios-card space-y-3 border border-realm-gold/25">
             <div>
-              <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">Date</label>
+              <label className="ios-label block mb-1">Date</label>
               <input type="date" value={form.date} onChange={e => setField('date', e.target.value)}
                 className="fl-input ff-mono text-sm py-2" style={{ colorScheme: 'dark' }} />
             </div>

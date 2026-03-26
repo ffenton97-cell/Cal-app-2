@@ -102,7 +102,7 @@ export default function Stats() {
         <div className="ios-card">
           <div className="flex items-end justify-between mb-2">
             <div>
-              <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">Level {current.level}</p>
+              <p className="ios-label">Level {current.level}</p>
               <p className="ff-heading text-[24px] font-bold text-realm-gold leading-tight">
                 {current.title}
               </p>
@@ -154,7 +154,7 @@ export default function Stats() {
             <>
               <div className="flex items-end justify-between mb-1">
                 <div>
-                  <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">Current Weight</p>
+                  <p className="ios-label">Current Weight</p>
                   <p className="ff-mono text-[22px] font-medium text-realm-text tabular-nums">
                     {allStats.latestWeight} kg
                   </p>

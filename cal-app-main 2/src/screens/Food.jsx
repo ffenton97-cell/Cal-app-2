@@ -152,9 +152,7 @@ export default function Food({ onXP }) {
           {/* calories */}
           <div>
             <div className="flex justify-between items-baseline mb-0.5">
-              <span className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">
-                Calories
-              </span>
+              <span className="ios-label">Calories</span>
               <span className="ff-mono text-[10px]"
                 style={{ color: barColor(calPct) }}>
                 {calLeft > 0 ? `${calLeft} left` : 'OVER'}
@@ -173,9 +171,7 @@ export default function Food({ onXP }) {
           {/* protein */}
           <div>
             <div className="flex justify-between items-baseline mb-0.5">
-              <span className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">
-                Protein
-              </span>
+              <span className="ios-label">Protein</span>
               <span className="ff-mono text-[10px]"
                 style={{ color: barColor(protPct) }}>
                 {protLeft > 0 ? `${protLeft}g left` : 'DONE'}

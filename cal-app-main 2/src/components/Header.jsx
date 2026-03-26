@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { format } from 'date-fns'
 import { Cloud } from 'lucide-react'
 import { useXP } from '../hooks/useXP'
 import { useStreaks } from '../hooks/useStreaks'

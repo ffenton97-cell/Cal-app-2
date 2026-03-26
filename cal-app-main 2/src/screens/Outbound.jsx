@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useHash } from '../hooks/useHash'
 import { format, subDays } from 'date-fns'
-import { Phone, CheckCheck, Zap, Flame, TrendingUp, Calendar, Swords } from 'lucide-react'
+import { CheckCheck, Zap, Flame, Swords } from 'lucide-react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useOutbound, saveOutbound } from '../hooks/useOutbound'
 import { awardXP } from '../hooks/useXP'
@@ -380,7 +380,7 @@ export default function Outbound({ onXP }) {
             )}
             {drill.prospectLine && (
               <div className="mt-3 ios-card">
-                <p className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest mb-1">Prospect</p>
+                <p className="ios-label mb-1">Prospect</p>
                 <p className="ff-mono text-[12px] text-[#a3a3a3] whitespace-pre-wrap">{drill.prospectLine}</p>
               </div>
             )}

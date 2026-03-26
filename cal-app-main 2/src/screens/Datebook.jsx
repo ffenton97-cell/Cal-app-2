@@ -272,7 +272,7 @@ export default function Datebook() {
       >
         <Icon size={16} strokeWidth={1.8} className="shrink-0 mt-0.5" style={{ color: col }} />
         <div className="min-w-0 flex-1">
-          <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest tabular-nums">
+          <p className="ios-label tabular-nums">
             {format(d, 'EEE d MMM yyyy')}
             {item.overdue && <span className="text-[#f87171] ml-2">Overdue</span>}
           </p>

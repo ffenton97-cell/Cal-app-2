@@ -33,7 +33,7 @@ function StatChip({ label, value }) {
   return (
     <div className="flex flex-col items-center gap-0.5 flex-1 py-3">
       <span className="ff-mono text-[17px] text-realm-gold tabular-nums font-medium">{value}</span>
-      <span className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest">{label}</span>
+      <span className="ios-label">{label}</span>
     </div>
   )
 }
@@ -360,8 +360,8 @@ export default function Workout({ onXP }) {
       )}
 
       {programModal === 'load' && (
-        <div className="mb-5 border border-realm-border bg-realm-panel p-3 rounded-md space-y-2 max-h-56 overflow-y-auto">
-          <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">Your programs</p>
+        <div className="mb-5 ios-card space-y-2 max-h-56 overflow-y-auto">
+          <p className="ios-label">Your programs</p>
           {savedBatches === undefined ? (
             <p className="ff-mono text-[11px] text-realm-faint">Loading…</p>
           ) : savedBatches.length === 0 ? (

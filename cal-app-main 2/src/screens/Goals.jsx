@@ -191,7 +191,7 @@ function GoalCard({ goal, onXP }) {
             <p className="ff-mono text-[10px] text-realm-faint italic">"{goal.why}"</p>
           )}
           <div className="flex items-center gap-2">
-            <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">
+            <label className="ios-label">
               Current
             </label>
             <input

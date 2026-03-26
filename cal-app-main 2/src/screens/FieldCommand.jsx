@@ -15,7 +15,7 @@ import SectionLabel from '../components/SectionLabel'
 function Stat({ label, value, sub }) {
   return (
     <div className="ios-card">
-      <p className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest">{label}</p>
+      <p className="ios-label">{label}</p>
       <p className="ff-mono text-lg text-realm-text tabular-nums mt-0.5">{value}</p>
       {sub && <p className="ff-mono text-[9px] text-realm-faint mt-1">{sub}</p>}
     </div>

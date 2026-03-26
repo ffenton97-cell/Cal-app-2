@@ -218,14 +218,14 @@ export default function CheckIn({ onXP }) {
 
       {/* streak + xp row */}
       <div className="flex items-center gap-2 mb-4 flex-wrap">
-        <div className="flex items-center gap-1.5 ios-card py-1.5 px-2.5">
+        <div className="flex items-center gap-1.5 rounded-[10px] bg-realm-panel border border-realm-hairline py-1.5 px-2.5">
           <Flame size={12} className="text-[#fb923c]" />
           <span className="ff-mono text-[12px] text-realm-text tabular-nums">{checkInStreak}</span>
           <span className="ff-mono text-[10px] text-realm-muted">day streak</span>
         </div>
 
         {gymStreak > 0 && (
-          <div className="flex items-center gap-1.5 ios-card py-1.5 px-2.5">
+          <div className="flex items-center gap-1.5 rounded-[10px] bg-realm-panel border border-realm-hairline py-1.5 px-2.5">
             <Dumbbell size={12} className="text-realm-gold" />
             <span className="ff-mono text-[12px] text-realm-text tabular-nums">{gymStreak}</span>
             <span className="ff-mono text-[10px] text-realm-muted">gym streak</span>

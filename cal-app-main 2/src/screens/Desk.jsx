@@ -532,15 +532,15 @@ export default function Desk({ onXP }) {
         ) : (
           <>
             <div className="flex gap-3 mb-3 text-center">
-              <div className="flex-1 ios-card py-2">
+              <div className="flex-1 rounded-[10px] bg-realm-panel py-2">
                 <p className="ff-mono text-2xl text-realm-ember tabular-nums">{taskBlock.overdue.length}</p>
                 <p className="ff-mono text-[9px] text-realm-muted uppercase">Overdue</p>
               </div>
-              <div className="flex-1 ios-card py-2">
+              <div className="flex-1 rounded-[10px] bg-realm-panel py-2">
                 <p className="ff-mono text-2xl text-realm-gold tabular-nums">{taskBlock.today.length}</p>
                 <p className="ff-mono text-[9px] text-realm-muted uppercase">Today</p>
               </div>
-              <div className="flex-1 ios-card py-2">
+              <div className="flex-1 rounded-[10px] bg-realm-panel py-2">
                 <p className="ff-mono text-2xl text-realm-text tabular-nums">{taskBlock.totalOpen}</p>
                 <p className="ff-mono text-[9px] text-realm-muted uppercase">Open</p>
               </div>
@@ -630,10 +630,10 @@ function EnemyConfigForm({ ux }) {
   const [mode, setMode] = useState(ux.enemyMode || 'benchmark')
 
   return (
-    <div className="mt-3 space-y-2 border border-realm-border p-2 bg-realm-bg-mid">
-      <label className="block ff-mono text-[9px] text-realm-muted uppercase">Benchmark label</label>
+    <div className="mt-3 space-y-2 ios-card">
+      <label className="block ios-label">Benchmark label</label>
       <input className="fl-input py-2 text-[12px]" value={name} onChange={(e) => setName(e.target.value)} />
-      <label className="block ff-mono text-[9px] text-realm-muted uppercase">Benchmark dials / mtgs (week)</label>
+      <label className="block ios-label">Benchmark dials / mtgs (week)</label>
       <div className="grid grid-cols-2 gap-2">
         <input className="fl-input py-2" value={dials} onChange={(e) => setDials(e.target.value)} inputMode="numeric" />
         <input className="fl-input py-2" value={mtgs} onChange={(e) => setMtgs(e.target.value)} inputMode="numeric" />

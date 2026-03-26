@@ -225,7 +225,7 @@ export default function Journal({ onXP }) {
               if (!entry) return null
               return (
                 <div key={d} className="border-l-2 border-realm-border pl-3">
-                  <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest mb-1.5">
+                  <p className="ios-label mb-1.5">
                     {format(new Date(d + 'T00:00:00'), 'EEE d MMM')}
                   </p>
                   <p className="ff-mono text-[12px] text-realm-soft leading-relaxed line-clamp-4">
