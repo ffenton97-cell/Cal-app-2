@@ -18,6 +18,7 @@ import {
   History,
   BarChart3,
   MessageCircle,
+  ClipboardList,
 } from 'lucide-react'
 
 function ForgeMark({ size = 20 }) {
@@ -58,6 +59,7 @@ const tabs = [
   { to: '/history', icon: History,        label: 'History'   },
   { to: '/stats',   icon: BarChart3,      label: 'Stats'     },
   { to: '/command', icon: Terminal,       label: 'Command'   },
+  { to: '/accountability', icon: ClipboardList, label: 'Review'  },
 ]
 
 export default function Nav({ onOpenOperator }) {
