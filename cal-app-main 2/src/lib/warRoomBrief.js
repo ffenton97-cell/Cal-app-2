@@ -8,7 +8,7 @@ function findOteGoal(salesGoals) {
 
 function parseNum(v) {
   if (v == null || v === '') return null
-  const n = Number(String(v.replace(/[^0-9.-]/g, '')))
+  const n = Number(String(v).replace(/[^0-9.-]/g, ''))
   return Number.isFinite(n) ? n : null
 }
 
