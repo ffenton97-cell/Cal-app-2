@@ -5,6 +5,7 @@ import { Phone, CheckCheck, Zap, Flame, TrendingUp, Calendar, Swords } from 'luc
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useOutbound, saveOutbound } from '../hooks/useOutbound'
 import { awardXP } from '../hooks/useXP'
+import { calcStreak } from '../hooks/useStreaks.js'
 import { XP as XP_VALUES } from '../theme'
 import { db } from '../db'
 import { getOrInitSalesUX, updateSalesUX } from '../lib/salesUX.js'
@@ -107,17 +108,7 @@ export default function Outbound({ onXP }) {
   }, [])
 
   // ── outbound streak ───────────────────────────────────────────────────────
-  const outboundStreak = useLiveQuery(async () => {
-    let streak = 0
-    let cursor = todayStr
-    for (let i = 0; i < 365; i++) {
-      const rec = await db.outbound.get(cursor)
-      if (!rec) break
-      streak++
-      cursor = format(subDays(new Date(cursor + 'T00:00:00'), 1), 'yyyy-MM-dd')
-    }
-    return streak
-  }, [])
+  const outboundStreak = useLiveQuery(() => calcStreak('outbound'), [])
 
   // ── form state ────────────────────────────────────────────────────────────
   const [calls,       setCalls]       = useState('')
