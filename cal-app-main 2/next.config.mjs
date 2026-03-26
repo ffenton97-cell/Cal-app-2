@@ -13,11 +13,20 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  /** Keep tracing & typecheck rooted in this app when a parent directory has another lockfile. */
+  /** Keep tracing & project root detection anchored here when parent dirs have lockfiles. */
   outputFileTracingRoot: __dirname,
+  experimental: {
+    workspaceRoot: __dirname,
+  },
   async redirects() {
     return [{ source: '/dates', destination: '/datebook', permanent: true }]
   },
 }
 
-export default withPWA(nextConfig)
+const wrappedConfig = withPWA(nextConfig)
+// Ensure these survive the withPWA wrapping
+wrappedConfig.outputFileTracingRoot = __dirname
+if (!wrappedConfig.experimental) wrappedConfig.experimental = {}
+wrappedConfig.experimental.workspaceRoot = __dirname
+
+export default wrappedConfig
