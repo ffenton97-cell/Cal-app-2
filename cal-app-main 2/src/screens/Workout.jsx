@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { format, subDays, parseISO } from 'date-fns'
+import { format } from 'date-fns'
 import { Dumbbell, CheckCheck, Zap, Plus, AlertTriangle, Library, Trash2 } from 'lucide-react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useWorkout, saveWorkout } from '../hooks/useWorkout'
@@ -14,6 +14,7 @@ import {
   saveWorkoutBatch,
   deleteWorkoutBatch,
 } from '../lib/workoutLibrary.js'
+import { calcStreak } from '../hooks/useStreaks.js'
 import SectionLabel from '../components/SectionLabel'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -24,20 +25,6 @@ const EXERCISE_DATALIST_ID = 'gym-exercise-name-hints'
 
 function newExercise(name = '') {
   return { id: crypto.randomUUID(), name, sets: [{ weight: '', reps: '' }] }
-}
-
-// ─── Workout streak ───────────────────────────────────────────────────────────
-async function calcWorkoutStreak() {
-  const today = format(new Date(), 'yyyy-MM-dd')
-  let streak = 0
-  let cursor = today
-  for (let i = 0; i < 365; i++) {
-    const record = await db.workouts.get(cursor)
-    if (!record) break
-    streak++
-    cursor = format(subDays(parseISO(cursor), 1), 'yyyy-MM-dd')
-  }
-  return streak
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -57,7 +44,7 @@ export default function Workout({ onXP }) {
   const todayStr      = format(new Date(), 'yyyy-MM-dd')
   const existing      = useWorkout()
   const todayEntry    = useEntry()
-  const workoutStreak = useLiveQuery(calcWorkoutStreak, [])
+  const workoutStreak = useLiveQuery(() => calcStreak('workouts'), [])
 
   // form state
   const [wtype,      setWtype]      = useState(null)

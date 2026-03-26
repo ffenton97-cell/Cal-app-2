@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { X, Trash2 } from 'lucide-react'
 import { buildChatContextSnapshot } from '../lib/chatContext.js'
 import { callChatAssistant } from '../lib/chatApi.js'
+import { FORGE_ICON_GRADIENT } from '../theme'
 
 const STORAGE_KEY = 'forge_operator_chat_v1'
 const LEGACY_KEY = 'fieldlog_coach_chat_v1'
@@ -139,7 +140,7 @@ export default function ChatPanel({ open, onClose }) {
           <div className="flex min-w-0 items-center gap-2.5">
             <div
               className="h-6 w-6 shrink-0 rounded-md border border-[rgba(220,60,80,0.18)]"
-              style={{ background: 'linear-gradient(145deg, #c43050 0%, #1a0c10 100%)' }}
+              style={{ background: FORGE_ICON_GRADIENT }}
               aria-hidden
             />
             <div className="min-w-0">

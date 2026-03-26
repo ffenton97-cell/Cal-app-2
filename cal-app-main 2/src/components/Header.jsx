@@ -7,6 +7,7 @@ import { useXP } from '../hooks/useXP'
 import { useStreaks } from '../hooks/useStreaks'
 import SyncPanel from './SyncPanel'
 import { getSyncToken } from '../lib/dexieSnapshot.js'
+import { FORGE_ICON_GRADIENT } from '../theme'
 
 export default function Header() {
   const [syncOpen, setSyncOpen] = useState(false)
@@ -33,9 +34,7 @@ export default function Header() {
           </span>
           <div
             className="h-6 w-6 shrink-0 rounded-full border border-[rgba(220,60,80,0.18)]"
-            style={{
-              background: 'linear-gradient(145deg, #c43050 0%, #1a0c10 100%)',
-            }}
+            style={{ background: FORGE_ICON_GRADIENT }}
             aria-hidden
           />
           <button

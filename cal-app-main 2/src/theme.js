@@ -145,3 +145,5 @@ export const USER = {
 
 /** getDay: Sun=0 … Sat=6 — scheduled gym times */
 export const GYM_SCHEDULE = { 1: '05:45', 2: '05:45', 3: '05:45', 4: '18:00' }
+
+export const FORGE_ICON_GRADIENT = 'linear-gradient(145deg, #c43050 0%, #1a0c10 100%)'
