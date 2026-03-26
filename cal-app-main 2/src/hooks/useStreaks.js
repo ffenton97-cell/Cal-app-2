@@ -7,7 +7,7 @@ import { db } from '../db'
  * `table`  — Dexie table name
  * `field`  — optional truthy-check field (e.g. 'gym' must be true)
  */
-async function calcStreak(table, field) {
+export async function calcStreak(table, field) {
   const today = format(new Date(), 'yyyy-MM-dd')
   let streak = 0
   let cursor = today

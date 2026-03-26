@@ -15,11 +15,13 @@ const PARTICLES = [
 export default function XPFloat({ amount, onDone }) {
   const [phase, setPhase] = useState('in')   // 'in' | 'out'
   const done = useRef(false)
+  const onDoneRef = useRef(onDone)
+  useEffect(() => { onDoneRef.current = onDone }, [onDone])
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase('out'), 900)
     const t2 = setTimeout(() => {
-      if (!done.current) { done.current = true; onDone() }
+      if (!done.current) { done.current = true; onDoneRef.current() }
     }, 1300)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])

@@ -27,6 +27,7 @@ import {
 } from '../lib/salesUX.js'
 import { rankOpenTodosForWeek } from '../lib/todoWeekPrioritize.js'
 import { buildDayStructure } from '../lib/dayStructure.js'
+import { calcStreak } from '../hooks/useStreaks.js'
 import SectionLabel from '../components/SectionLabel'
 
 function DailyBriefing({ todayStr, suggestions }) {
@@ -132,18 +133,6 @@ function nextPaydays(anchorStr, intervalDays, count = 4) {
 const priColor = (p) =>
   ({ HIGH: '#e05070', MED: '#d4a050', LOW: 'rgba(255,255,255,0.22)' }[p] ?? 'rgba(255,255,255,0.22)')
 
-async function workoutDayStreak() {
-  const todayStr = format(new Date(), 'yyyy-MM-dd')
-  let streak = 0
-  let cursor = todayStr
-  for (let i = 0; i < 365; i++) {
-    const r = await db.workouts.get(cursor)
-    if (!r) break
-    streak++
-    cursor = format(subDays(parseISO(`${cursor}T12:00:00`), 1), 'yyyy-MM-dd')
-  }
-  return streak
-}
 
 export default function Desk({ onXP }) {
   const todayStr = format(new Date(), 'yyyy-MM-dd')
@@ -158,14 +147,11 @@ export default function Desk({ onXP }) {
     const days = Array.from({ length: 7 }, (_, i) => format(subDays(new Date(), i), 'yyyy-MM-dd'))
     const records = await Promise.all(days.map((d) => db.outbound.get(d)))
     const live = records.filter(Boolean)
-    let streak = 0
-    let cursor = todayStr
-    for (let i = 0; i < 365; i++) {
-      const rec = await db.outbound.get(cursor)
-      if (!rec) break
-      streak++
-      cursor = format(subDays(parseISO(`${cursor}T12:00:00`), 1), 'yyyy-MM-dd')
-    }
+    const [streak, trainingStreak, gymStreak] = await Promise.all([
+      calcStreak('outbound'),
+      calcStreak('workouts'),
+      calcStreak('entries', 'gym'),
+    ])
     const todayRow = await db.outbound.get(todayStr)
     const yRow = await db.outbound.get(yesterdayStr)
     const salesGoals = await db.goals
@@ -173,15 +159,6 @@ export default function Desk({ onXP }) {
       .toArray()
     const ux = await getOrInitSalesUX()
     const yesterdayMood = await loadYesterdayMood()
-    const trainingStreak = await workoutDayStreak()
-    let gymStreak = 0
-    let gc = todayStr
-    for (let i = 0; i < 365; i++) {
-      const e = await db.entries.get(gc)
-      if (!e?.gym) break
-      gymStreak++
-      gc = format(subDays(parseISO(`${gc}T12:00:00`), 1), 'yyyy-MM-dd')
-    }
     const weekCalls = live.reduce((s, r) => s + (r.calls || 0), 0)
     const weekMeetings = live.reduce((s, r) => s + (r.meetings || 0), 0)
     const defaultDialTarget = Math.max(20, Math.round((weekCalls / 7) * 1.1) || 20)

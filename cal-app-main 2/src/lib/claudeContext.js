@@ -1,33 +1,8 @@
-import { format, subDays, parseISO } from 'date-fns'
+import { format, subDays } from 'date-fns'
 import { db } from '../db'
 import { USER } from '../theme'
 import { morningBriefSupplement } from './fieldAnalytics.js'
-
-async function calcGymStreak() {
-  const today = format(new Date(), 'yyyy-MM-dd')
-  let streak = 0
-  let cursor = today
-  for (let i = 0; i < 365; i++) {
-    const record = await db.entries.get(cursor)
-    if (!record?.gym) break
-    streak++
-    cursor = format(subDays(parseISO(`${cursor}T12:00:00`), 1), 'yyyy-MM-dd')
-  }
-  return streak
-}
-
-async function calcCheckInStreak() {
-  const today = format(new Date(), 'yyyy-MM-dd')
-  let streak = 0
-  let cursor = today
-  for (let i = 0; i < 365; i++) {
-    const record = await db.entries.get(cursor)
-    if (!record) break
-    streak++
-    cursor = format(subDays(parseISO(`${cursor}T12:00:00`), 1), 'yyyy-MM-dd')
-  }
-  return streak
-}
+import { calcStreak } from '../hooks/useStreaks.js'
 
 /**
  * Weight trend: last up to 14 logged weights (date asc).
@@ -101,8 +76,8 @@ async function goalsSummary() {
 export async function buildAccountabilitySystemPrompt() {
   const todayStr = format(new Date(), 'yyyy-MM-dd')
   const todayEntry = (await db.entries.get(todayStr)) || {}
-  const gymStreak = await calcGymStreak()
-  const checkInStreak = await calcCheckInStreak()
+  const gymStreak = await calcStreak('entries', 'gym')
+  const checkInStreak = await calcStreak('entries')
   const trend = await weightTrend()
   const journals = await recentJournals(7)
   const pipeline = await pipelineSummary()

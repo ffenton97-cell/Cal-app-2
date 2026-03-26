@@ -87,7 +87,7 @@ body {
 
 body {
   background: var(--color-realm-bg);
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.68);
   font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
@@ -109,9 +109,9 @@ body {
 /* Briefing / structured panels */
 .ea-panel {
   font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
 }
 
 .ea-panel .ea-h {
@@ -121,25 +121,25 @@ body {
 }
 
 .ea-panel .ea-sub {
-  color: rgba(255, 255, 255, 0.32);
-  font-size: 11px;
-  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .ea-panel .ea-k {
   font-family: var(--font-jetbrains), ui-monospace, monospace;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.28);
 }
 
 .ea-panel .ea-time {
   font-family: var(--font-jetbrains), ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.32);
   min-width: 2.75rem;
 }
 
@@ -178,29 +178,30 @@ nav a {
 
 /* ─── Inputs ─────────────────────────────────────────────────────────────── */
 .fl-input {
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 10px;
   color: #f5f0f0;
   outline: none;
   transition: border-color 150ms ease, box-shadow 150ms ease;
-  padding: 0.6rem 0.75rem;
+  padding: 0.7rem 0.85rem;
   font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   width: 100%;
   display: block;
+  line-height: 1.4;
 
   @media (max-width: 640px) {
     font-size: 1rem;
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.22);
     font-style: italic;
   }
   &:focus {
-    border-color: rgba(224, 80, 112, 0.35);
-    box-shadow: 0 0 0 1px rgba(224, 80, 112, 0.12);
+    border-color: rgba(224, 80, 112, 0.4);
+    box-shadow: 0 0 0 1px rgba(224, 80, 112, 0.14);
   }
   &[type=number]  { -moz-appearance: textfield; }
   &[type=number]::-webkit-inner-spin-button,

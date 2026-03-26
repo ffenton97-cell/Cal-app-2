@@ -5,6 +5,7 @@ import { Phone, CheckCheck, Zap, Flame, TrendingUp, Calendar, Swords } from 'luc
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useOutbound, saveOutbound } from '../hooks/useOutbound'
 import { awardXP } from '../hooks/useXP'
+import { calcStreak } from '../hooks/useStreaks.js'
 import { XP as XP_VALUES } from '../theme'
 import { db } from '../db'
 import { getOrInitSalesUX, updateSalesUX } from '../lib/salesUX.js'
@@ -79,12 +80,9 @@ export default function Outbound({ onXP }) {
 
   const salesUx = useLiveQuery(() => getOrInitSalesUX(), [])
 
-  const [drillReply, setDrillReply] = useState('')
-  const [drillLoading, setDrillLoading] = useState(false)
-  const [drillErr, setDrillErr] = useState(null)
-  const [drillCoach, setDrillCoach] = useState(null)
-  const [drillScores, setDrillScores] = useState(null)
-  const [drillProspectLine, setDrillProspectLine] = useState(null)
+  const [drill, setDrill] = useState({
+    reply: '', loading: false, err: null, coach: null, scores: null, prospectLine: null,
+  })
 
   useEffect(() => {
     if (hash !== 'outbound-drill') return
@@ -110,17 +108,7 @@ export default function Outbound({ onXP }) {
   }, [])
 
   // ── outbound streak ───────────────────────────────────────────────────────
-  const outboundStreak = useLiveQuery(async () => {
-    let streak = 0
-    let cursor = todayStr
-    for (let i = 0; i < 365; i++) {
-      const rec = await db.outbound.get(cursor)
-      if (!rec) break
-      streak++
-      cursor = format(subDays(new Date(cursor + 'T00:00:00'), 1), 'yyyy-MM-dd')
-    }
-    return streak
-  }, [])
+  const outboundStreak = useLiveQuery(() => calcStreak('outbound'), [])
 
   // ── form state ────────────────────────────────────────────────────────────
   const [calls,       setCalls]       = useState('')
@@ -236,16 +224,12 @@ export default function Outbound({ onXP }) {
     salesUx && scenarioForToday(todayStr, drillTier)
 
   async function handleDrillSubmit() {
-    if (!drillReply.trim() || drillLoading || !drillScenario) return
-    setDrillLoading(true)
-    setDrillErr(null)
-    setDrillCoach(null)
-    setDrillScores(null)
-    setDrillProspectLine(null)
+    if (!drill.reply.trim() || drill.loading || !drillScenario) return
+    setDrill(d => ({ ...d, loading: true, err: null, coach: null, scores: null, prospectLine: null }))
     try {
       const user = buildObjectionDrillUserMessage({
         scenario: drillScenario.scenario,
-        repReply: drillReply,
+        repReply: drill.reply,
         tierLabel: drillScenario.tierLabel,
       })
       const raw = await callClaudeProxy({
@@ -256,10 +240,13 @@ export default function Outbound({ onXP }) {
       const lines = raw.split(/\r?\n/)
       const cut = lines.findIndex((l) => /SCORE_DIRECTNESS:/i.test(l))
       const prospectPart = cut >= 0 ? lines.slice(0, cut).join('\n').trim() : ''
-      if (prospectPart) setDrillProspectLine(prospectPart)
       const parsed = parseDrillReply(raw)
-      setDrillScores(parsed)
-      setDrillCoach(parsed.coaching || raw.trim())
+      setDrill(d => ({
+        ...d,
+        prospectLine: prospectPart || null,
+        scores: parsed,
+        coach: parsed.coaching || raw.trim(),
+      }))
 
       const ux = await getOrInitSalesUX()
       let newStreak = ux.drillStreak ?? 0
@@ -306,9 +293,9 @@ export default function Outbound({ onXP }) {
         ...(xpGranted ? { lastDrillXpDay: todayStr } : {}),
       })
     } catch (e) {
-      setDrillErr(e?.message || 'Drill failed')
+      setDrill(d => ({ ...d, err: e?.message || 'Drill failed' }))
     } finally {
-      setDrillLoading(false)
+      setDrill(d => ({ ...d, loading: false }))
     }
   }
 
@@ -376,40 +363,40 @@ export default function Outbound({ onXP }) {
             </div>
             <textarea
               rows={3}
-              value={drillReply}
-              onChange={(e) => setDrillReply(e.target.value)}
+              value={drill.reply}
+              onChange={(e) => setDrill(d => ({ ...d, reply: e.target.value }))}
               placeholder="Your reply (spoken)…"
               className="fl-input ff-mono text-[13px] resize-none mb-2"
             />
             <button
               type="button"
-              disabled={!drillReply.trim() || drillLoading}
+              disabled={!drill.reply.trim() || drill.loading}
               onClick={handleDrillSubmit}
               className="w-full py-3 border border-realm-gold/35 text-realm-gold ff-mono text-[11px] uppercase tracking-wider disabled:opacity-30"
             >
-              {drillLoading ? 'Sparring…' : 'Spar — +5 XP'}
+              {drill.loading ? 'Sparring…' : 'Spar — +5 XP'}
             </button>
-            {drillErr && (
-              <p className="ff-mono text-[11px] text-[#f87171] mt-2">{drillErr}</p>
+            {drill.err && (
+              <p className="ff-mono text-[11px] text-[#f87171] mt-2">{drill.err}</p>
             )}
-            {drillProspectLine && (
+            {drill.prospectLine && (
               <div className="mt-3 border border-realm-border p-3 bg-realm-panel">
                 <p className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest mb-1">Prospect</p>
-                <p className="ff-mono text-[12px] text-[#a3a3a3] whitespace-pre-wrap">{drillProspectLine}</p>
+                <p className="ff-mono text-[12px] text-[#a3a3a3] whitespace-pre-wrap">{drill.prospectLine}</p>
               </div>
             )}
-            {drillScores && (drillScores.directness || drillScores.coaching) && (
+            {drill.scores && (drill.scores.directness || drill.scores.coaching) && (
               <div className="mt-3 border border-realm-gold/25 bg-realm-gold/8 p-3">
                 <p className="ff-mono text-[9px] text-realm-gold uppercase tracking-widest mb-2">Operator</p>
-                {(drillScores.directness || drillScores.curiosity || drillScores.nextstep) && (
+                {(drill.scores.directness || drill.scores.curiosity || drill.scores.nextstep) && (
                   <p className="ff-mono text-[11px] text-realm-text mb-2 tabular-nums">
-                    {drillScores.directness && `Direct ${drillScores.directness}/10`}
-                    {drillScores.curiosity && ` · Curiosity ${drillScores.curiosity}/10`}
-                    {drillScores.nextstep && ` · Next step ${drillScores.nextstep}/10`}
+                    {drill.scores.directness && `Direct ${drill.scores.directness}/10`}
+                    {drill.scores.curiosity && ` · Curiosity ${drill.scores.curiosity}/10`}
+                    {drill.scores.nextstep && ` · Next step ${drill.scores.nextstep}/10`}
                   </p>
                 )}
-                {drillCoach && (
-                  <p className="ff-mono text-[12px] text-realm-text-soft leading-relaxed">{drillCoach}</p>
+                {drill.coach && (
+                  <p className="ff-mono text-[12px] text-realm-text-soft leading-relaxed">{drill.coach}</p>
                 )}
               </div>
             )}
