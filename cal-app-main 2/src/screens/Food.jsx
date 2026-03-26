@@ -130,10 +130,10 @@ export default function Food({ onXP }) {
       {/* header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h1 className="ff-heading text-[22px] font-bold text-realm-text tracking-tight leading-none">
+          <h1 className="ios-title">
             FUEL LOG
           </h1>
-          <p className="ff-mono text-[11px] text-realm-faint mt-1 tracking-[0.15em] uppercase">
+          <p className="text-[11px] text-realm-faint mt-1">
             {format(new Date(), 'EEEE, d MMMM yyyy')}
           </p>
         </div>
@@ -147,14 +147,12 @@ export default function Food({ onXP }) {
       </div>
 
       {/* ── RUNNING TOTALS ── */}
-      <div className="mb-5 border border-realm-border bg-realm-panel p-4">
+      <div className="mb-5 ios-card">
         <div className="grid grid-cols-2 gap-4">
           {/* calories */}
           <div>
             <div className="flex justify-between items-baseline mb-0.5">
-              <span className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">
-                Calories
-              </span>
+              <span className="ios-label">Calories</span>
               <span className="ff-mono text-[10px]"
                 style={{ color: barColor(calPct) }}>
                 {calLeft > 0 ? `${calLeft} left` : 'OVER'}
@@ -173,9 +171,7 @@ export default function Food({ onXP }) {
           {/* protein */}
           <div>
             <div className="flex justify-between items-baseline mb-0.5">
-              <span className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">
-                Protein
-              </span>
+              <span className="ios-label">Protein</span>
               <span className="ff-mono text-[10px]"
                 style={{ color: barColor(protPct) }}>
                 {protLeft > 0 ? `${protLeft}g left` : 'DONE'}
@@ -228,7 +224,7 @@ export default function Food({ onXP }) {
           />
           <div className="flex gap-2">
             <div className="flex-1">
-              <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1">
+              <label className="ios-label block mb-1">
                 Calories
               </label>
               <input
@@ -241,7 +237,7 @@ export default function Food({ onXP }) {
               />
             </div>
             <div className="flex-1">
-              <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1">
+              <label className="ios-label block mb-1">
                 Protein (g)
               </label>
               <input
@@ -283,8 +279,8 @@ export default function Food({ onXP }) {
               type="button"
               onClick={() => handleAddMeal(m)}
               className="flex items-center justify-between px-3 py-2
-                border border-realm-border bg-realm-panel hover:border-realm-gold/45
-                transition-all duration-150 text-left"
+                ios-card hover:border-realm-gold/45
+                transition-all duration-150 text-left border"
             >
               <span className="ff-mono text-[11px] text-realm-soft truncate pr-1">{m.name}</span>
               <div className="flex flex-col items-end shrink-0">
@@ -300,7 +296,7 @@ export default function Food({ onXP }) {
       {meals.length > 0 && (
         <div className="mb-5">
           <SectionLabel>Today's Log</SectionLabel>
-          <div className="border border-realm-border divide-y divide-[#1e1e1e]">
+          <div className="ios-group">
             {[...meals].reverse().map(m => (
               <div key={m.id} className="flex items-center gap-3 px-3 py-2.5">
                 <span className="ff-mono text-[10px] text-[#2a2a2a] w-10 shrink-0 tabular-nums">

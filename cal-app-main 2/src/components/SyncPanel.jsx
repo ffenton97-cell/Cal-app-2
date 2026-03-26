@@ -121,7 +121,7 @@ export default function SyncPanel({ open, onClose, onTokenSaved }) {
           </p>
 
           <div>
-            <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1.5">
+            <label className="ios-label block mb-1.5">
               Sync passphrase
             </label>
             <input

@@ -99,7 +99,7 @@ export default function Journal({ onXP }) {
         )}
       </div>
 
-      <div className="flex gap-0 mb-5 border border-realm-border">
+      <div className="flex gap-0 mb-5 ios-group">
         <button
           type="button"
           onClick={() => setTab('today')}
@@ -137,7 +137,7 @@ export default function Journal({ onXP }) {
           ) : (
             <div className="space-y-5">
               {armoury.map((row) => (
-                <div key={row.id} className="border border-realm-border bg-realm-panel px-3 py-3">
+                <div key={row.id} className="ios-card">
                   <p className="ff-mono text-[11px] text-realm-text-soft leading-relaxed uppercase tracking-wide whitespace-pre-wrap">
                     &ldquo;{row.text}&rdquo;
                   </p>
@@ -225,7 +225,7 @@ export default function Journal({ onXP }) {
               if (!entry) return null
               return (
                 <div key={d} className="border-l-2 border-realm-border pl-3">
-                  <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest mb-1.5">
+                  <p className="ios-label mb-1.5">
                     {format(new Date(d + 'T00:00:00'), 'EEE d MMM')}
                   </p>
                   <p className="ff-mono text-[12px] text-realm-soft leading-relaxed line-clamp-4">

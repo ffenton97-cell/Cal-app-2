@@ -88,10 +88,10 @@ export default function Stats() {
     <div className="px-4 pt-4 pb-2 max-w-lg mx-auto">
 
       <div className="mb-5">
-        <h1 className="ff-heading text-[22px] font-bold text-realm-text tracking-tight leading-none">
+        <h1 className="ios-title">
           STATS
         </h1>
-        <p className="ff-mono text-[11px] text-realm-faint mt-1 tracking-[0.15em] uppercase">
+        <p className="text-[11px] text-realm-faint mt-1">
           {format(new Date(), 'EEEE, d MMMM yyyy')}
         </p>
       </div>
@@ -99,10 +99,10 @@ export default function Stats() {
       {/* XP & Level */}
       <div className="mb-5">
         <SectionLabel>Rank</SectionLabel>
-        <div className="border border-realm-border bg-realm-panel p-4">
+        <div className="ios-card">
           <div className="flex items-end justify-between mb-2">
             <div>
-              <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">Level {current.level}</p>
+              <p className="ios-label">Level {current.level}</p>
               <p className="ff-heading text-[24px] font-bold text-realm-gold leading-tight">
                 {current.title}
               </p>
@@ -126,7 +126,7 @@ export default function Stats() {
       {/* Streaks */}
       <div className="mb-5">
         <SectionLabel>Streaks</SectionLabel>
-        <div className="border border-realm-border bg-realm-panel">
+        <div className="ios-group">
           <StatRow label="Check-in" value={`${checkInStreak} days`}
             color={checkInStreak >= 7 ? '#4ade80' : '#e5e5e5'} />
           <StatRow label="Gym"      value={`${gymStreak} sessions`}
@@ -137,7 +137,7 @@ export default function Stats() {
       {/* This week */}
       <div className="mb-5">
         <SectionLabel>This Week (7 days)</SectionLabel>
-        <div className="border border-realm-border bg-realm-panel">
+        <div className="ios-group">
           <StatRow label="Check-ins" value={allStats?.week7CheckIns ?? '—'} sub="/ 7 days" />
           <StatRow label="Workouts"  value={allStats?.week7Workouts ?? '—'} />
           <StatRow label="Calls"     value={allStats?.week7Calls    ?? '—'} />
@@ -149,12 +149,12 @@ export default function Stats() {
       {/* Body */}
       <div className="mb-5">
         <SectionLabel>Body</SectionLabel>
-        <div className="border border-realm-border bg-realm-panel p-4">
+        <div className="ios-card">
           {allStats?.latestWeight != null ? (
             <>
               <div className="flex items-end justify-between mb-1">
                 <div>
-                  <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest">Current Weight</p>
+                  <p className="ios-label">Current Weight</p>
                   <p className="ff-mono text-[22px] font-medium text-realm-text tabular-nums">
                     {allStats.latestWeight} kg
                   </p>
@@ -187,7 +187,7 @@ export default function Stats() {
       {/* Outbound totals */}
       <div className="mb-5">
         <SectionLabel>All-Time Outbound</SectionLabel>
-        <div className="border border-realm-border bg-realm-panel">
+        <div className="ios-group">
           <StatRow label="Total Calls"    value={(allStats?.totalCalls    ?? 0).toLocaleString()} />
           <StatRow label="Total Meetings" value={(allStats?.totalMeets    ?? 0).toLocaleString()}
             color={(allStats?.totalMeets ?? 0) > 0 ? '#d4a853' : '#525252'} />
@@ -198,7 +198,7 @@ export default function Stats() {
       {/* Activity counts */}
       <div className="mb-5">
         <SectionLabel>All-Time Activity</SectionLabel>
-        <div className="border border-realm-border bg-realm-panel">
+        <div className="ios-group">
           <StatRow label="Check-ins"      value={allStats?.totalCheckIns  ?? 0} />
           <StatRow label="Workouts"       value={allStats?.totalWorkouts  ?? 0} />
           <StatRow label="Goals set"      value={allStats?.totalGoals     ?? 0} />

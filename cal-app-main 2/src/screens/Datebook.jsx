@@ -272,7 +272,7 @@ export default function Datebook() {
       >
         <Icon size={16} strokeWidth={1.8} className="shrink-0 mt-0.5" style={{ color: col }} />
         <div className="min-w-0 flex-1">
-          <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest tabular-nums">
+          <p className="ios-label tabular-nums">
             {format(d, 'EEE d MMM yyyy')}
             {item.overdue && <span className="text-[#f87171] ml-2">Overdue</span>}
           </p>
@@ -299,7 +299,7 @@ export default function Datebook() {
     <div className="px-4 pt-4 pb-2 max-w-lg mx-auto">
 
       <div className="mb-6">
-        <h1 className="ff-heading text-[20px] font-semibold text-realm-text tracking-tight leading-none">
+        <h1 className="ios-title">
           Calendar
         </h1>
         <p className="text-[12.5px] text-[rgba(255,255,255,0.32)] mt-1">
@@ -314,10 +314,10 @@ export default function Datebook() {
         </p>
         <form
           onSubmit={handleAddPersonal}
-          className="border border-realm-border bg-realm-panel p-3 space-y-3"
+          className="ios-card space-y-3"
         >
           <div>
-            <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1">
+            <label className="ios-label block mb-1">
               Label
             </label>
             <input
@@ -329,7 +329,7 @@ export default function Datebook() {
             />
           </div>
           <div>
-            <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1">
+            <label className="ios-label block mb-1">
               Date
             </label>
             <input
@@ -349,7 +349,7 @@ export default function Datebook() {
             Every year (same month and day)
           </label>
           <div>
-            <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1">
+            <label className="ios-label block mb-1">
               Note (optional)
             </label>
             <input
@@ -480,7 +480,7 @@ export default function Datebook() {
           {overdue.length > 0 && (
             <section className="mb-8">
               <SectionLabel>Overdue</SectionLabel>
-              <div className="border border-realm-border bg-realm-panel overflow-hidden">
+              <div className="ios-group">
                 {overdue.map((item) => (
                   <RowCard key={item.id} item={item} />
                 ))}
@@ -498,7 +498,7 @@ export default function Datebook() {
             ) : upcoming.length === 0 ? (
               <p className="ff-mono text-[11px] text-[#2a2a2a] py-4">Nothing scheduled ahead.</p>
             ) : (
-              <div className="border border-realm-border bg-realm-panel overflow-hidden">
+              <div className="ios-group">
                 {upcoming.map((item) => (
                   <RowCard key={item.id} item={item} />
                 ))}
@@ -509,7 +509,7 @@ export default function Datebook() {
           {pastRef.length > 0 && (
             <section className="mb-6">
               <SectionLabel>Recent reference</SectionLabel>
-              <div className="border border-realm-hairline bg-realm-bg-mid overflow-hidden opacity-90">
+              <div className="ios-group opacity-90">
                 {pastRef.map((item) => (
                   <RowCard key={item.id} item={item} />
                 ))}
