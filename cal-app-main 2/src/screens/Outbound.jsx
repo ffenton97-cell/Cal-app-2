@@ -305,10 +305,10 @@ export default function Outbound({ onXP }) {
 
       {/* header */}
       <div className="mb-4">
-        <h1 className="ff-heading text-[20px] font-semibold tracking-tight leading-none text-[#f5f0f0]">
+        <h1 className="ios-title">
           Outreach log
         </h1>
-        <p className="forge-mono mt-1 text-[10px] text-[rgba(255,255,255,0.18)]">
+        <p className="text-[11px] text-realm-faint mt-1">
           {format(new Date(), 'EEEE, d MMMM yyyy')}
         </p>
       </div>
@@ -316,8 +316,7 @@ export default function Outbound({ onXP }) {
       {/* streak + xp row */}
       <div className="flex items-center gap-2 mb-4 flex-wrap">
         {(outboundStreak ?? 0) > 0 && (
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5
-            bg-realm-panel border border-realm-border">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[10px] bg-realm-panel border border-realm-hairline">
             <Flame size={12} className="text-[#fb923c]" />
             <span className="ff-mono text-[12px] text-realm-text tabular-nums">
               {outboundStreak}
@@ -342,7 +341,7 @@ export default function Outbound({ onXP }) {
         ) : (
           <>
             <div className="flex items-center gap-2 mb-2 flex-wrap">
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-realm-panel border border-realm-border">
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[10px] bg-realm-panel border border-realm-hairline">
                 <Swords size={12} className="text-realm-gold" />
                 <span className="ff-mono text-[11px] text-realm-text tabular-nums">
                   {salesUx.drillStreak ?? 0}
@@ -356,7 +355,7 @@ export default function Outbound({ onXP }) {
                 <span className="ff-mono text-[10px] text-[#4ade80] uppercase">+5 XP filed</span>
               )}
             </div>
-            <div className="border border-realm-hairline bg-realm-bg-mid px-3 py-3 mb-3">
+            <div className="ios-card mb-3">
               <p className="ff-mono text-[11px] text-realm-text-soft leading-relaxed whitespace-pre-wrap uppercase tracking-wide">
                 {drillScenario?.scenario}
               </p>
@@ -380,13 +379,13 @@ export default function Outbound({ onXP }) {
               <p className="ff-mono text-[11px] text-[#f87171] mt-2">{drill.err}</p>
             )}
             {drill.prospectLine && (
-              <div className="mt-3 border border-realm-border p-3 bg-realm-panel">
+              <div className="mt-3 ios-card">
                 <p className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest mb-1">Prospect</p>
                 <p className="ff-mono text-[12px] text-[#a3a3a3] whitespace-pre-wrap">{drill.prospectLine}</p>
               </div>
             )}
             {drill.scores && (drill.scores.directness || drill.scores.coaching) && (
-              <div className="mt-3 border border-realm-gold/25 bg-realm-gold/8 p-3">
+              <div className="mt-3 ios-card border border-realm-gold/25">
                 <p className="ff-mono text-[9px] text-realm-gold uppercase tracking-widest mb-2">Operator</p>
                 {(drill.scores.directness || drill.scores.curiosity || drill.scores.nextstep) && (
                   <p className="ff-mono text-[11px] text-realm-text mb-2 tabular-nums">
@@ -525,8 +524,7 @@ export default function Outbound({ onXP }) {
       {weeklyStats && weeklyStats.days > 0 && (
         <div className="mb-5">
           <SectionLabel>This Week</SectionLabel>
-          <div className="border border-realm-border bg-realm-panel
-            flex divide-x divide-realm-border">
+          <div className="ios-group flex divide-x divide-realm-border">
             {[
               { label: 'Days',  value: weeklyStats.days },
               { label: 'Calls', value: weeklyStats.calls },

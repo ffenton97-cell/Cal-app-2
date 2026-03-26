@@ -96,7 +96,7 @@ export default function BodyComp({ onXP }) {
 
       <div className="flex items-start justify-between mb-5">
         <div>
-          <h1 className="ff-heading text-[22px] font-bold text-realm-text tracking-tight leading-none">
+          <h1 className="ios-title">
             BODY SCAN
           </h1>
           <p className="ff-mono text-[11px] text-realm-faint mt-1 tracking-[0.15em] uppercase">
@@ -114,7 +114,7 @@ export default function BodyComp({ onXP }) {
       {latest && (
         <div className="mb-5">
           <SectionLabel>Latest · {latest.date}</SectionLabel>
-          <div className="border border-realm-border bg-realm-panel p-4">
+          <div className="ios-card">
             <div className="grid grid-cols-3 gap-4">
               <Stat label="Weight"   value={latest.weight}   unit="kg"  delta={delta('weight')}  deltaInvert />
               <Stat label="Body Fat" value={latest.bf}       unit="%"   delta={delta('bf')}       deltaInvert />
@@ -143,7 +143,7 @@ export default function BodyComp({ onXP }) {
       {showForm && (
         <div className="mb-5">
           <SectionLabel>New Scan</SectionLabel>
-          <div className="border border-realm-gold/25 bg-realm-panel p-4 space-y-3">
+          <div className="ios-card space-y-3 border border-realm-gold/25">
             <div>
               <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">Date</label>
               <input type="date" value={form.date} onChange={e => setField('date', e.target.value)}
@@ -158,7 +158,7 @@ export default function BodyComp({ onXP }) {
                 { k: 'lean',   label: 'Lean (kg)' },
               ].map(({ k, label }) => (
                 <div key={k}>
-                  <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1">
+                  <label className="ios-label block mb-1">
                     {label}
                   </label>
                   <input type="number" inputMode="decimal" step="0.1"
@@ -189,7 +189,7 @@ export default function BodyComp({ onXP }) {
                   { k: 'android',  label: 'Android (%)' },
                 ].map(({ k, label }) => (
                   <div key={k}>
-                    <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1">
+                    <label className="ios-label block mb-1">
                       {label}
                     </label>
                     <input type="number" inputMode="decimal" step="0.1"
@@ -234,7 +234,7 @@ export default function BodyComp({ onXP }) {
       {scans.length > 1 && (
         <div>
           <SectionLabel>History</SectionLabel>
-          <div className="border border-realm-border divide-y divide-realm-hairline">
+          <div className="ios-group">
             {scans.slice(1).map(s => (
               <div key={s.id} className="flex items-center gap-3 px-3 py-2.5">
                 <span className="ff-mono text-[11px] text-realm-muted w-24 shrink-0">{s.date}</span>

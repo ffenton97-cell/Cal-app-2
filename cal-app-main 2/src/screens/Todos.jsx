@@ -265,10 +265,10 @@ export default function Todos({ onXP }) {
       {/* header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h1 className="ff-heading text-[22px] font-bold text-realm-text tracking-tight leading-none">
+          <h1 className="ios-title">
             Task queue
           </h1>
-          <p className="ff-mono text-[11px] text-realm-faint mt-1 tracking-[0.15em] uppercase">
+          <p className="text-[11px] text-realm-faint mt-1">
             {format(new Date(), 'EEEE, d MMMM')}
           </p>
         </div>
@@ -304,7 +304,7 @@ export default function Todos({ onXP }) {
       </div>
 
       {tab === 'FOCUS' && (
-        <div className="mb-3 border border-realm-border bg-realm-bg-mid px-3 py-3">
+        <div className="mb-3 ios-card">
           <div className="flex items-start gap-2">
             <Target size={14} className="text-realm-gold shrink-0 mt-0.5" />
             <div>
@@ -339,7 +339,7 @@ export default function Todos({ onXP }) {
 
       {/* task list */}
       {visibleRows.length > 0 ? (
-        <div className="border border-realm-border bg-realm-panel mb-4">
+        <div className="ios-group mb-4">
           {visibleRows.map((row, i) => (
             <TodoItem
               key={row.todo.id}
@@ -374,7 +374,7 @@ export default function Todos({ onXP }) {
       {showForm && (
         <div className="mb-4">
           <SectionLabel>New Task</SectionLabel>
-          <div className="border border-realm-gold/25 bg-realm-panel p-4 space-y-3">
+          <div className="ios-card space-y-3 border border-realm-gold/25">
             <input
               type="text"
               value={form.title}

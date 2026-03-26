@@ -43,7 +43,7 @@ function Bar({ value, max }) {
 function MacroStat({ label, value, good }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="ff-mono text-[9px] text-realm-faint uppercase tracking-wider">{label}</span>
+      <span className="ios-label">{label}</span>
       <span className="ff-mono text-[12px]" style={{ color: good ? '#4ade80' : '#d4a853' }}>
         {value}
       </span>
@@ -208,26 +208,24 @@ export default function CheckIn({ onXP }) {
 
       {/* header */}
       <div className="mb-4">
-        <h1 className="ff-heading text-[22px] font-bold text-realm-text tracking-tight leading-none">
+        <h1 className="ios-title">
           Check-in
         </h1>
-        <p className="ff-mono text-[11px] text-realm-faint mt-1 tracking-[0.15em] uppercase">
+        <p className="text-[11px] text-realm-faint mt-1">
           {format(new Date(), 'EEEE, d MMMM yyyy')}
         </p>
       </div>
 
       {/* streak + xp row */}
       <div className="flex items-center gap-2 mb-4 flex-wrap">
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5
-          bg-realm-panel border border-realm-border">
+        <div className="flex items-center gap-1.5 ios-card py-1.5 px-2.5">
           <Flame size={12} className="text-[#fb923c]" />
           <span className="ff-mono text-[12px] text-realm-text tabular-nums">{checkInStreak}</span>
           <span className="ff-mono text-[10px] text-realm-muted">day streak</span>
         </div>
 
         {gymStreak > 0 && (
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5
-            bg-realm-panel border border-realm-border">
+          <div className="flex items-center gap-1.5 ios-card py-1.5 px-2.5">
             <Dumbbell size={12} className="text-realm-gold" />
             <span className="ff-mono text-[12px] text-realm-text tabular-nums">{gymStreak}</span>
             <span className="ff-mono text-[10px] text-realm-muted">gym streak</span>
@@ -316,7 +314,7 @@ export default function CheckIn({ onXP }) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1.5">
+            <label className="ios-label block mb-1.5">
               Calories
             </label>
             <input
@@ -338,7 +336,7 @@ export default function CheckIn({ onXP }) {
           </div>
 
           <div>
-            <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1.5">
+            <label className="ios-label block mb-1.5">
               Protein
             </label>
             <input
@@ -361,7 +359,7 @@ export default function CheckIn({ onXP }) {
         </div>
 
         {calsNum > 0 && proteinNum > 0 && (
-          <div className="mt-2 px-3 py-2 bg-realm-panel border border-realm-border flex gap-5">
+          <div className="mt-2 ios-card flex gap-5">
             <MacroStat
               label="P/cal"
               value={`${((proteinNum / calsNum) * 100).toFixed(0)}%`}
@@ -427,7 +425,7 @@ export default function CheckIn({ onXP }) {
         <SectionLabel>Notes &amp; wins</SectionLabel>
         <div className="space-y-3">
           <div>
-            <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1.5">
+            <label className="ios-label block mb-1.5">
               Win of the Day
             </label>
             <textarea
@@ -440,7 +438,7 @@ export default function CheckIn({ onXP }) {
             />
           </div>
           <div>
-            <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1.5">
+            <label className="ios-label block mb-1.5">
               Sales Highlight
             </label>
             <textarea
@@ -472,7 +470,7 @@ export default function CheckIn({ onXP }) {
           </p>
         )}
         {briefText && (
-          <div className="mt-3 border border-realm-gold/25 bg-realm-gold/8 p-4">
+          <div className="mt-3 ios-card border border-realm-gold/25">
             <p className="ff-mono text-[9px] text-realm-gold uppercase tracking-widest mb-2">
               Brief
             </p>

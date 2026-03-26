@@ -387,8 +387,8 @@ export default function Desk({ onXP }) {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-2 mb-3">
-              <div className="border border-realm-border bg-realm-panel px-3 py-3">
-                <p className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest mb-1">7-day</p>
+              <div className="ios-card">
+                <p className="ios-label mb-1">7-day</p>
                 <p
                   className={`ff-mono text-xl tabular-nums ${
                     sessionActive ? 'text-realm-sage' : 'text-realm-text'
@@ -398,8 +398,8 @@ export default function Desk({ onXP }) {
                 </p>
                 <p className="ff-mono text-[9px] text-realm-faint mt-0.5">calls</p>
               </div>
-              <div className="border border-realm-border bg-realm-panel px-3 py-3">
-                <p className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest mb-1">Meetings</p>
+              <div className="ios-card">
+                <p className="ios-label mb-1">Meetings</p>
                 <p
                   className={`ff-mono text-xl tabular-nums ${
                     sessionActive ? 'text-realm-sage' : 'text-realm-gold-hot'
@@ -411,7 +411,7 @@ export default function Desk({ onXP }) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 mb-3 px-3 py-2 border border-realm-border bg-realm-bg-mid">
+            <div className="flex items-center gap-2 mb-3 ios-card">
               <TrendingUp size={14} className="text-realm-arcane shrink-0" />
               <span className="ff-mono text-[11px] text-realm-soft">
                 Log streak:{' '}
@@ -420,8 +420,8 @@ export default function Desk({ onXP }) {
             </div>
 
             {salesBlock.todayRow && (
-              <div className="border border-realm-hairline bg-realm-panel px-3 py-2 mb-3 ff-mono text-[11px] text-realm-soft">
-                <span className="text-realm-muted uppercase text-[9px] tracking-wider">Today logged</span>
+              <div className="ios-card mb-3 ff-mono text-[11px] text-realm-soft">
+                <span className="ios-label">Today logged</span>
                 <p className="text-realm-text mt-1">
                   {salesBlock.todayRow.calls ?? 0} calls · {salesBlock.todayRow.meetings ?? 0} meetings ·{' '}
                   {salesBlock.todayRow.convos ?? 0} convos
@@ -532,24 +532,24 @@ export default function Desk({ onXP }) {
         ) : (
           <>
             <div className="flex gap-3 mb-3 text-center">
-              <div className="flex-1 border border-realm-border py-2">
+              <div className="flex-1 ios-card py-2">
                 <p className="ff-mono text-2xl text-realm-ember tabular-nums">{taskBlock.overdue.length}</p>
                 <p className="ff-mono text-[9px] text-realm-muted uppercase">Overdue</p>
               </div>
-              <div className="flex-1 border border-realm-border py-2">
+              <div className="flex-1 ios-card py-2">
                 <p className="ff-mono text-2xl text-realm-gold tabular-nums">{taskBlock.today.length}</p>
                 <p className="ff-mono text-[9px] text-realm-muted uppercase">Today</p>
               </div>
-              <div className="flex-1 border border-realm-border py-2">
+              <div className="flex-1 ios-card py-2">
                 <p className="ff-mono text-2xl text-realm-text tabular-nums">{taskBlock.totalOpen}</p>
                 <p className="ff-mono text-[9px] text-realm-muted uppercase">Open</p>
               </div>
             </div>
 
-            <p className="ff-mono text-[9px] text-realm-muted uppercase tracking-wider mb-2">
+            <p className="ios-label mb-2">
               This week (auto-ranked)
             </p>
-            <div className="space-y-0 border border-realm-border divide-y divide-realm-hairline mb-3">
+            <div className="space-y-0 ios-group mb-3">
               {(taskBlock.weeklyPreview ?? []).length === 0 ? (
                 <p className="ff-mono text-[11px] text-realm-faint px-3 py-4 text-center">No open tasks</p>
               ) : (
@@ -604,7 +604,7 @@ export default function Desk({ onXP }) {
           {paydays.map((d) => (
             <span
               key={d}
-              className="ff-mono text-[11px] px-2.5 py-1 border border-realm-border text-realm-soft tabular-nums"
+              className="ff-mono text-[11px] px-2.5 py-1 border border-realm-hairline rounded-[10px] bg-realm-panel text-realm-soft tabular-nums"
             >
               {format(parseISO(`${d}T12:00:00`), 'EEE d MMM')}
             </span>

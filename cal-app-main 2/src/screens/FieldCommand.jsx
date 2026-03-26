@@ -14,7 +14,7 @@ import SectionLabel from '../components/SectionLabel'
 
 function Stat({ label, value, sub }) {
   return (
-    <div className="border border-realm-border bg-realm-panel px-3 py-2.5">
+    <div className="ios-card">
       <p className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest">{label}</p>
       <p className="ff-mono text-lg text-realm-text tabular-nums mt-0.5">{value}</p>
       {sub && <p className="ff-mono text-[9px] text-realm-faint mt-1">{sub}</p>}
@@ -24,7 +24,7 @@ function Stat({ label, value, sub }) {
 
 function AiBlock({ title, text, loading, error, onRun }) {
   return (
-    <div className="border border-realm-hairline bg-realm-bg-mid p-3 mt-3">
+    <div className="ios-card mt-3">
       <div className="flex items-center justify-between gap-2 mb-2">
         <span className="ff-mono text-[9px] text-realm-gold uppercase tracking-widest">{title}</span>
         <button
@@ -122,7 +122,7 @@ export default function FieldCommand() {
   return (
     <div className="px-4 pt-4 pb-28 max-w-lg mx-auto">
       <div className="mb-6">
-        <h1 className="ff-heading text-[20px] font-semibold tracking-tight leading-none text-[#f5f0f0]">
+        <h1 className="ios-title">
           Command
         </h1>
         <p className="mt-1 text-[11px] leading-relaxed text-[rgba(255,255,255,0.32)]">
@@ -167,7 +167,7 @@ export default function FieldCommand() {
           />
 
           <SectionLabel className="mt-8 first:mt-0">Cross-domain</SectionLabel>
-          <div className="ff-mono text-[11px] text-realm-soft space-y-1 border border-realm-border p-3 bg-realm-panel">
+          <div className="ff-mono text-[11px] text-realm-soft space-y-1 ios-card">
             <p>
               Dialed/Solid avg dials:{' '}
               <span className="text-realm-text">
@@ -209,7 +209,7 @@ export default function FieldCommand() {
           />
 
           <SectionLabel className="mt-8 first:mt-0">Goal lines</SectionLabel>
-          <div className="space-y-2 border border-realm-border divide-y divide-realm-hairline">
+          <div className="ios-group">
             {bundle.goals.map((g) => (
               <div key={g.title} className="px-3 py-2">
                 <p className="ff-mono text-[12px] text-realm-text">{g.title}</p>
@@ -238,7 +238,7 @@ export default function FieldCommand() {
           </div>
 
           <SectionLabel className="mt-8 first:mt-0">Body</SectionLabel>
-          <div className="ff-mono text-[11px] text-realm-soft border border-realm-border p-3 space-y-1">
+          <div className="ff-mono text-[11px] text-realm-soft ios-card space-y-1">
             <p>
               7d avg weight:{' '}
               <span className="text-realm-text">{bundle.body.rollingAvgWeight7d ?? '—'} kg</span>
@@ -253,7 +253,7 @@ export default function FieldCommand() {
           </div>
 
           <SectionLabel className="mt-8 first:mt-0">Capital</SectionLabel>
-          <div className="ff-mono text-[11px] text-realm-soft border border-realm-border p-3 space-y-1">
+          <div className="ff-mono text-[11px] text-realm-soft ios-card space-y-1">
             <p>
               NW (latest):{' '}
               <span className="text-realm-text">
@@ -273,7 +273,7 @@ export default function FieldCommand() {
           </div>
 
           <SectionLabel className="mt-8 first:mt-0">Tasks</SectionLabel>
-          <div className="border border-realm-border divide-y divide-realm-hairline">
+          <div className="ios-group">
             {bundle.tasks.rankedTop.map((t) => (
               <div key={t.title + (t.due || '')} className="px-3 py-2 flex justify-between gap-2">
                 <span className="ff-mono text-[12px] text-realm-text truncate">{t.title}</span>

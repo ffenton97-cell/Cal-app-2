@@ -23,7 +23,7 @@ function fmt(n) {
 function FinField({ label, value, onChange, placeholder = '0' }) {
   return (
     <div>
-      <label className="ff-mono text-[9px] text-realm-muted uppercase tracking-widest block mb-1">
+      <label className="ios-label block mb-1">
         {label}
       </label>
       <div className="relative">
@@ -115,10 +115,10 @@ export default function Finance({ onXP }) {
 
       <div className="flex items-start justify-between mb-5">
         <div>
-          <h1 className="ff-heading text-[22px] font-bold text-realm-text tracking-tight leading-none">
+          <h1 className="ios-title">
             BALANCE SHEET
           </h1>
-          <p className="ff-mono text-[11px] text-realm-faint mt-1 tracking-[0.15em] uppercase">
+          <p className="text-[11px] text-realm-faint mt-1">
             Net Worth Tracker
           </p>
         </div>
@@ -133,7 +133,7 @@ export default function Finance({ onXP }) {
       {latestNW != null && (
         <div className="mb-5">
           <SectionLabel>Net Worth · {latest.date}</SectionLabel>
-          <div className="border border-realm-border bg-realm-panel p-4">
+          <div className="ios-card">
             <div className="flex items-end justify-between mb-3">
               <div>
                 <p className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest mb-0.5">
@@ -211,7 +211,7 @@ export default function Finance({ onXP }) {
       {showForm && (
         <div className="mb-5">
           <SectionLabel>New Snapshot</SectionLabel>
-          <div className="border border-realm-gold/25 bg-realm-panel p-4 space-y-4">
+          <div className="ios-card space-y-4 border border-realm-gold/25">
             <div>
               <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">Date</label>
               <input type="date" value={form.date} onChange={e => setField('date', e.target.value)}
@@ -290,7 +290,7 @@ export default function Finance({ onXP }) {
       {records.length > 1 && (
         <div>
           <SectionLabel>History</SectionLabel>
-          <div className="border border-realm-border divide-y divide-realm-hairline">
+          <div className="ios-group">
             {records.slice(1).map(r => {
               const nw = calcNW({ cash: r.cash, super: r.super, invest: r.invest, propval: r.propval, mortgage: r.mortgage, hecs: r.hecs })
               return (

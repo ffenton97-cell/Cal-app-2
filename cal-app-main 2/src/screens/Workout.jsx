@@ -235,18 +235,17 @@ export default function Workout({ onXP }) {
 
       {/* header */}
       <div className="mb-4">
-        <h1 className="ff-heading text-[22px] font-bold text-realm-text tracking-tight leading-none">
+        <h1 className="ios-title">
           TRAINING LOG
         </h1>
-        <p className="ff-mono text-[11px] text-realm-faint mt-1 tracking-[0.15em] uppercase">
+        <p className="text-[11px] text-realm-faint mt-1">
           {format(new Date(), 'EEEE, d MMMM yyyy')}
         </p>
       </div>
 
       {/* streak + xp row */}
       <div className="flex items-center gap-2 mb-4 flex-wrap">
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5
-          bg-realm-panel border border-realm-border">
+        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[10px] bg-realm-panel border border-realm-hairline">
           <Dumbbell size={12} className="text-realm-gold" />
           <span className="ff-mono text-[12px] text-realm-text tabular-nums">
             {workoutStreak ?? 0}
@@ -372,7 +371,7 @@ export default function Workout({ onXP }) {
               {savedBatches.map((b) => (
                 <li
                   key={b.id}
-                  className="flex items-center gap-2 border border-realm-hairline bg-realm-bg-mid px-2 py-2"
+                  className="flex items-center gap-2 rounded-xl bg-realm-panel border border-realm-hairline px-2 py-2"
                 >
                   <div className="flex-1 min-w-0">
                     <p className="ff-mono text-[12px] text-realm-text truncate">{b.name}</p>
@@ -461,7 +460,7 @@ export default function Workout({ onXP }) {
 
         <div className="space-y-2">
           {exercises.map((ex) => (
-            <div key={ex.id} className="border border-realm-border bg-realm-panel">
+            <div key={ex.id} className="ios-group">
 
               {/* exercise name header */}
               <div className="flex items-center gap-2 px-3 pt-2.5 pb-2
@@ -561,7 +560,7 @@ export default function Workout({ onXP }) {
       {totalSets > 0 && (
         <div className="mb-5">
           <SectionLabel>Volume</SectionLabel>
-          <div className="flex border border-realm-border bg-realm-panel divide-x divide-realm-border">
+          <div className="flex ios-group divide-x divide-realm-border">
             <StatChip label="Sets"    value={totalSets} />
             <StatChip label="Reps"    value={totalReps || '—'} />
             <StatChip label="Tonnage" value={tonnageDisplay} />

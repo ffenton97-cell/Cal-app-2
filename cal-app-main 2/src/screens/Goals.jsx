@@ -110,7 +110,7 @@ function GoalCard({ goal, onXP }) {
 
   return (
     <div
-      className="border transition-all duration-200"
+      className="border rounded-xl overflow-hidden transition-all duration-200"
       style={{
         borderColor: goal.completed ? '#4ade8030' : '#252525',
         backgroundColor: goal.completed ? '#4ade8006' : '#161616',
@@ -280,10 +280,10 @@ function NewGoalForm({ onSave, onCancel }) {
   }
 
   return (
-    <div className="border border-realm-gold/25 bg-realm-panel p-4 space-y-3">
+    <div className="ios-card space-y-3 border border-realm-gold/25">
       {/* title */}
       <div>
-        <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">
+        <label className="ios-label block mb-1">
           Goal
         </label>
         <input
@@ -297,7 +297,7 @@ function NewGoalForm({ onSave, onCancel }) {
 
       {/* category */}
       <div>
-        <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">
+        <label className="ios-label block mb-1">
           Category
         </label>
         <div className="flex flex-wrap gap-1.5">
@@ -323,7 +323,7 @@ function NewGoalForm({ onSave, onCancel }) {
       {/* start / target / unit */}
       <div className="grid grid-cols-3 gap-2">
         <div>
-          <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">
+          <label className="ios-label block mb-1">
             Start
           </label>
           <input
@@ -336,7 +336,7 @@ function NewGoalForm({ onSave, onCancel }) {
           />
         </div>
         <div>
-          <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">
+          <label className="ios-label block mb-1">
             Target
           </label>
           <input
@@ -349,7 +349,7 @@ function NewGoalForm({ onSave, onCancel }) {
           />
         </div>
         <div>
-          <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">
+          <label className="ios-label block mb-1">
             Unit
           </label>
           <input
@@ -364,7 +364,7 @@ function NewGoalForm({ onSave, onCancel }) {
 
       {/* deadline */}
       <div>
-        <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">
+        <label className="ios-label block mb-1">
           Deadline
         </label>
         <input
@@ -378,7 +378,7 @@ function NewGoalForm({ onSave, onCancel }) {
 
       {/* why */}
       <div>
-        <label className="ff-mono text-[10px] text-realm-muted uppercase tracking-widest block mb-1">
+        <label className="ios-label block mb-1">
           Why
         </label>
         <input
@@ -452,10 +452,10 @@ export default function Goals({ onXP }) {
       {/* header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h1 className="ff-heading text-[22px] font-bold text-realm-text tracking-tight leading-none">
+          <h1 className="ios-title">
             Banners
           </h1>
-          <p className="ff-mono text-[11px] text-realm-faint mt-1 tracking-[0.15em] uppercase">
+          <p className="text-[11px] text-realm-faint mt-1">
             {format(new Date(), 'EEEE, d MMMM yyyy')}
           </p>
         </div>
@@ -469,8 +469,7 @@ export default function Goals({ onXP }) {
       {/* summary chips */}
       {goals.length > 0 && (
         <div className="flex gap-2 mb-4 flex-wrap">
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5
-            bg-realm-panel border border-realm-border">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-[10px] bg-realm-panel border border-realm-hairline">
             <span className="ff-mono text-[12px] text-realm-text tabular-nums">{active.length}</span>
             <span className="ff-mono text-[10px] text-realm-muted">active</span>
           </div>
