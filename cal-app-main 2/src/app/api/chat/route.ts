@@ -21,31 +21,34 @@ Rules:
 - Medical/legal: one line — professional required.
 - Never open with "I'm FORGE" or "How can I help".`
 
+type MsgContent = string | Array<Record<string, unknown>>
+
 function sanitizeMessages(arr: unknown) {
   if (!Array.isArray(arr)) return []
-  return arr
-    .filter(
-      (m): m is { role: string; content: string } =>
-        Boolean(m) &&
-        typeof m === 'object' &&
-        m !== null &&
-        'role' in m &&
-        'content' in m &&
-        ((m as { role: string }).role === 'user' ||
-          (m as { role: string }).role === 'assistant') &&
-        typeof (m as { content: unknown }).content === 'string' &&
-        String((m as { content: string }).content).length > 0,
-    )
-    .map((m) => ({
-      role: m.role,
-      content: m.content.slice(0, 48000),
-    }))
+  return (arr as unknown[])
+    .filter((m): m is { role: string; content: MsgContent } => {
+      if (!m || typeof m !== 'object' || m === null) return false
+      const msg = m as Record<string, unknown>
+      if (!('role' in msg) || !('content' in msg)) return false
+      if (msg.role !== 'user' && msg.role !== 'assistant') return false
+      const c = msg.content
+      if (typeof c === 'string') return c.length > 0
+      if (Array.isArray(c)) return c.length > 0
+      return false
+    })
+    .map((m) => {
+      if (typeof m.content === 'string') {
+        return { role: m.role, content: m.content.slice(0, 48000) }
+      }
+      // Array content — pass through as-is (supports vision/image blocks)
+      return { role: m.role, content: m.content }
+    })
     .slice(-48)
 }
 
 export async function POST(request: Request) {
   const raw = await request.text()
-  if (raw.length > 500_000) {
+  if (raw.length > 5_000_000) {
     return NextResponse.json({ error: 'Payload too large' }, { status: 413 })
   }
 

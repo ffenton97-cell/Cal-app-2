@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { X, Trash2 } from 'lucide-react'
+import { X, Trash2, Paperclip, XCircle } from 'lucide-react'
 import { buildChatContextSnapshot } from '../lib/chatContext.js'
 import { callChatAssistant } from '../lib/chatApi.js'
 import { FORGE_ICON_GRADIENT } from '../theme'
 
 const STORAGE_KEY = 'forge_operator_chat_v1'
 const LEGACY_KEY = 'fieldlog_coach_chat_v1'
+
+/** Content is either a string or an array of blocks (text/image). */
+function isValidContent(content) {
+  if (typeof content === 'string') return content.trim().length > 0
+  if (Array.isArray(content)) return content.length > 0
+  return false
+}
 
 function loadStoredMessages() {
   if (typeof window === 'undefined') return []
@@ -25,7 +32,7 @@ function loadStoredMessages() {
       (m) =>
         m &&
         (m.role === 'user' || m.role === 'assistant') &&
-        typeof m.content === 'string'
+        isValidContent(m.content)
     )
   } catch {
     return []
@@ -36,11 +43,26 @@ function normalizeHistory(list) {
   const out = []
   for (const m of list) {
     if (!m || (m.role !== 'user' && m.role !== 'assistant')) continue
-    if (typeof m.content !== 'string' || !m.content.trim()) continue
-    out.push({ role: m.role, content: m.content.trim() })
+    if (!isValidContent(m.content)) continue
+    if (typeof m.content === 'string') {
+      out.push({ role: m.role, content: m.content.trim() })
+    } else {
+      out.push({ role: m.role, content: m.content })
+    }
   }
   while (out.length > 0 && out[0].role === 'assistant') out.shift()
   return out.slice(-80)
+}
+
+/** Strip image data before writing to localStorage — base64 is too large. */
+function toStorable(messages) {
+  return messages.map((m) => {
+    if (typeof m.content === 'string') return m
+    const stripped = m.content.map((block) =>
+      block.type === 'image' ? { type: 'text', text: '[image]' } : block
+    )
+    return { ...m, content: stripped }
+  })
 }
 
 export default function ChatPanel({ open, onClose }) {
@@ -48,12 +70,15 @@ export default function ChatPanel({ open, onClose }) {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  /** { dataUrl: string, data: string, mediaType: string } | null */
+  const [pendingImage, setPendingImage] = useState(null)
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ messages }))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ messages: toStorable(messages) }))
   }, [messages])
 
   useEffect(() => {
@@ -79,19 +104,45 @@ export default function ChatPanel({ open, onClose }) {
   const clearChat = useCallback(() => {
     setMessages([])
     setError(null)
+    setPendingImage(null)
     localStorage.removeItem(STORAGE_KEY)
     localStorage.removeItem(LEGACY_KEY)
   }, [])
 
+  function handleFileSelect(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (evt) => {
+      const dataUrl = evt.target.result
+      const mediaType = file.type || 'image/jpeg'
+      const data = dataUrl.split(',')[1]
+      setPendingImage({ dataUrl, data, mediaType })
+    }
+    reader.readAsDataURL(file)
+    e.target.value = ''
+  }
+
   async function handleSend(e) {
     e.preventDefault()
     const text = input.trim()
-    if (!text || loading) return
+    if ((!text && !pendingImage) || loading) return
+
+    let userContent
+    if (pendingImage) {
+      userContent = [
+        { type: 'image', source: { type: 'base64', media_type: pendingImage.mediaType, data: pendingImage.data } },
+        { type: 'text', text: text || 'Analyse this image and extract any relevant data.' },
+      ]
+    } else {
+      userContent = text
+    }
 
     setError(null)
     setInput('')
+    setPendingImage(null)
     const prior = normalizeHistory(messages)
-    const nextUser = { role: 'user', content: text }
+    const nextUser = { role: 'user', content: userContent }
     const forApi = normalizeHistory([...prior, nextUser])
     setMessages((m) => [...normalizeHistory(m), nextUser])
     setLoading(true)
@@ -105,7 +156,7 @@ export default function ChatPanel({ open, onClose }) {
       setMessages((m) => {
         const n = normalizeHistory(m)
         const last = n[n.length - 1]
-        if (last?.role === 'user' && last.content === text) return n.slice(0, -1)
+        if (last?.role === 'user') return n.slice(0, -1)
         return n
       })
     } finally {
@@ -147,8 +198,8 @@ export default function ChatPanel({ open, onClose }) {
               <h2 id="forge-chat-title" className="text-[14px] font-semibold text-[#f5f0f0]">
                 Operator
               </h2>
-              <p className="forge-mono truncate text-[10px] text-[rgba(255,255,255,0.18)]">
-                Full context on send. No re-briefing.
+              <p className="forge-mono truncate text-[10px] text-[rgba(255,255,255,0.28)]">
+                Attach screenshots · Full context on send
               </p>
             </div>
           </div>
@@ -176,32 +227,61 @@ export default function ChatPanel({ open, onClose }) {
         <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-3 py-3 [scrollbar-width:thin]">
           {messages.length === 0 && !loading && (
             <p className="text-[12.5px] font-normal leading-[1.65] text-[rgba(255,255,255,0.55)]">
-              State the move. Training, check-in, outreach, tasks, capital — data refreshes on each send.
+              State the move. Training, check-in, outreach, tasks, capital — data refreshes on each send. Attach screenshots to extract data.
             </p>
           )}
           <ul className="flex flex-col gap-3">
-            {messages.map((m, i) => (
-              <li
-                key={`${i}-${m.role}-${m.content.slice(0, 24)}`}
-                className={`flex w-full ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[min(100%,340px)] border px-2.5 py-2 text-[12.5px] font-normal leading-[1.65] text-[rgba(255,255,255,0.55)] ${
-                    m.role === 'user'
-                      ? 'rounded-[10px] rounded-tr-[3px] border-[rgba(220,60,80,0.1)] bg-[rgba(220,60,80,0.04)]'
-                      : 'rounded-[10px] rounded-tl-[3px] border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)]'
-                  }`}
+            {messages.map((m, i) => {
+              const key = `${i}-${m.role}`
+              return (
+                <li
+                  key={key}
+                  className={`flex w-full ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <span className="forge-mono mb-1 block text-[9px] uppercase tracking-[0.08em] text-[rgba(255,255,255,0.18)]">
-                    {m.role === 'user' ? 'You' : 'FORGE'}
-                  </span>
-                  <div className="whitespace-pre-wrap">{m.content}</div>
-                </div>
-              </li>
-            ))}
+                  <div
+                    className={`max-w-[min(100%,340px)] border px-2.5 py-2 text-[12.5px] font-normal leading-[1.65] text-[rgba(255,255,255,0.68)] ${
+                      m.role === 'user'
+                        ? 'rounded-[10px] rounded-tr-[3px] border-[rgba(220,60,80,0.1)] bg-[rgba(220,60,80,0.04)]'
+                        : 'rounded-[10px] rounded-tl-[3px] border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)]'
+                    }`}
+                  >
+                    <span className="forge-mono mb-1 block text-[9px] uppercase tracking-[0.08em] text-[rgba(255,255,255,0.28)]">
+                      {m.role === 'user' ? 'You' : 'FORGE'}
+                    </span>
+                    {typeof m.content === 'string' ? (
+                      <div className="whitespace-pre-wrap">{m.content}</div>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        {m.content.map((block, j) => {
+                          if (block.type === 'image' && block.source?.data) {
+                            return (
+                              <img
+                                key={j}
+                                src={`data:${block.source.media_type};base64,${block.source.data}`}
+                                className="max-w-full rounded-[6px] opacity-90"
+                                alt="attached screenshot"
+                              />
+                            )
+                          }
+                          if (block.type === 'image') {
+                            return (
+                              <em key={j} className="text-[rgba(255,255,255,0.28)]">[image]</em>
+                            )
+                          }
+                          if (block.type === 'text' && block.text) {
+                            return <div key={j} className="whitespace-pre-wrap">{block.text}</div>
+                          }
+                          return null
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
           </ul>
           {loading && (
-            <p className="forge-mono mt-3 text-[10px] text-[rgba(255,255,255,0.18)]">Running pass…</p>
+            <p className="forge-mono mt-3 text-[10px] text-[rgba(255,255,255,0.28)]">Running pass…</p>
           )}
           {error && (
             <p className="mt-3 rounded-[10px] border border-[rgba(255,255,255,0.08)] bg-[rgba(212,160,80,0.06)] px-2.5 py-2 text-[12.5px] text-[rgba(255,255,255,0.55)]">
@@ -215,7 +295,50 @@ export default function ChatPanel({ open, onClose }) {
           onSubmit={handleSend}
           className="shrink-0 border-t border-[rgba(220,60,80,0.06)] bg-[#0a0607] p-2.5"
         >
+          {/* Image preview */}
+          {pendingImage && (
+            <div className="mb-2 flex items-center gap-2 rounded-[8px] border border-[rgba(220,60,80,0.15)] bg-[rgba(220,60,80,0.06)] px-2.5 py-2">
+              <img
+                src={pendingImage.dataUrl}
+                alt="pending attachment"
+                className="h-12 w-12 shrink-0 rounded-[4px] object-cover opacity-90"
+              />
+              <span className="forge-mono flex-1 text-[10px] text-[rgba(255,255,255,0.45)] truncate">
+                Screenshot ready · add a note or send as-is
+              </span>
+              <button
+                type="button"
+                onClick={() => setPendingImage(null)}
+                className="shrink-0 text-[rgba(255,255,255,0.32)] hover:text-[#f5f0f0]"
+                aria-label="Remove attachment"
+              >
+                <XCircle size={16} strokeWidth={1.6} />
+              </button>
+            </div>
+          )}
+
           <div className="flex gap-2">
+            {/* Hidden file input */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileSelect}
+              aria-label="Attach image"
+            />
+            {/* Attach button */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={loading}
+              className="h-11 shrink-0 self-start rounded-[7px] border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.025)] px-3 text-[rgba(255,255,255,0.38)] transition-colors duration-150 ease-out hover:border-[rgba(220,60,80,0.25)] hover:text-realm-gold disabled:opacity-35"
+              title="Attach screenshot"
+              aria-label="Attach screenshot"
+            >
+              <Paperclip size={15} strokeWidth={1.6} />
+            </button>
+
             <div className="relative min-h-[44px] flex-1">
               <label htmlFor="forge-chat-input" className="sr-only">
                 Message
@@ -237,23 +360,20 @@ export default function ChatPanel({ open, onClose }) {
                     handleSend(e)
                   }
                 }}
-                placeholder="signal or question"
+                placeholder={pendingImage ? 'add a note (optional)…' : 'signal or question'}
                 rows={2}
                 disabled={loading}
-                className="min-h-[44px] w-full resize-none rounded-[10px] border border-[rgba(255,255,255,0.07)] bg-[rgba(255,255,255,0.025)] py-2 pr-2 pl-[4.25rem] text-[12.5px] text-[#f5f0f0] placeholder:italic placeholder:text-[rgba(255,255,255,0.16)] outline-none transition-colors duration-150 ease-out focus:border-[rgba(224,80,112,0.35)] disabled:opacity-50"
+                className="min-h-[44px] w-full resize-none rounded-[10px] border border-[rgba(255,255,255,0.07)] bg-[rgba(255,255,255,0.025)] py-2 pr-2 pl-[4.25rem] text-[12.5px] text-[#f5f0f0] placeholder:italic placeholder:text-[rgba(255,255,255,0.22)] outline-none transition-colors duration-150 ease-out focus:border-[rgba(224,80,112,0.35)] disabled:opacity-50"
               />
             </div>
             <button
               type="submit"
-              disabled={loading || !input.trim()}
+              disabled={loading || (!input.trim() && !pendingImage)}
               className="h-11 shrink-0 self-start rounded-[7px] bg-[#c43050] px-4 text-[12px] font-medium text-white transition-opacity duration-150 ease-out hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-35"
             >
               Send
             </button>
           </div>
-          <p className="forge-mono mt-2 text-center text-[9px] tracking-[0.04em] text-[rgba(255,255,255,0.18)]">
-            POST /api/chat · ANTHROPIC_API_KEY on Netlify or netlify dev
-          </p>
         </form>
       </aside>
     </div>
